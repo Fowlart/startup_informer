@@ -33,15 +33,18 @@ for specific instructions on how to do this (e.g., in my case, editing `/etc/pro
 
 **Todo:**
 
-- Organize the possibility of starting the bash script with the flag to spin up separate processes, traversing all
+- ~~Organize the possibility of starting the bash script with the flag to spin up separate processes, traversing all
 chat history in telegram without a time limit, and exporting it to the file. 
 Send the file for analysis. 
 A separate process should be created in Python. 
-Flag recognition should be organized at the bash script. 
+Flag recognition should be organized at the bash script.~~ 
 
-- Add working with Linux Keyrings to store Telegram credentials
+- ~~Add working with Linux Keyring to store Telegram credentials~~
 
 - Add working with bash to automate install application on a new Linux VM
+
+- Add code to parse all Telegram user channels for looking up, messages by simple pattern(for the starting ). 
+Use multithreading/multiprocessing/asyncio to parse multiple channels simultaneously. 
 
 
 **Ideas for another project:**
