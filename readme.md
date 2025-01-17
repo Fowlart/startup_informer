@@ -41,12 +41,10 @@ Flag recognition should be organized at the bash script.
 
 - Add working with Linux Keyrings to store Telegram credentials
 
-- Add laptop screen activation notification
-
-- Add working with bash to automate install application on a new VM
+- Add working with bash to automate install application on a new Linux VM
 
 
-**Another project:**
+**Ideas for another project:**
 
 - Index all messages from telegram to Azure AI search, implement search be key-words from telegram
 - Use Spark ML on Linux, to analyze through messages
