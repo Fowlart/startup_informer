@@ -51,3 +51,4 @@ Use multithreading/multiprocessing/asyncio to parse multiple channels simultaneo
 
 - Index all messages from telegram to Azure AI search, implement search be key-words from telegram
 - Use Spark ML on Linux, to analyze through messages
+- Create a daemon which will track access to folders of interest in Linux, and will send notifications about
