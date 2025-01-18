@@ -35,8 +35,8 @@ fi
 
 get_restart_and_connection_info > ./startup_info
 
-# handle the case of first launch:
-# todo: this one makes app not scalable
+# handle the case of first launch. Telegram authentication needed.
+# todo: this one makes app not scalable...
 if [[ -f ./init_session.session ]]
 then
   echo "Skipping Telegram login..."
