@@ -14,7 +14,6 @@ for specific instructions on how to do this (e.g., in my case, editing `/etc/pro
 ### Note:
 
 * This script requires root privileges to access system logs.
-* Because of keyring usage, the script should run *after* the user login
 
 **Linux command to include and study**
 - `crontab -e`
@@ -23,7 +22,7 @@ for specific instructions on how to do this (e.g., in my case, editing `/etc/pro
 - `awk`
 - `sed`
 - `cat /proc/sys/kernel/threads-max`
-- `keyring`
+- editing `/etc/profile`
 
 **Python concepts to include and study:**
 - Threading vs Multiprocessing
@@ -37,13 +36,11 @@ for specific instructions on how to do this (e.g., in my case, editing `/etc/pro
 chat history in telegram without a time limit, and exporting it to the file. 
 Send the file for analysis. 
 A separate process should be created in Python. 
-Flag recognition should be organized at the bash script.~~ 
-
-- ~~Add working with Linux Keyring to store Telegram credentials~~
+Flag recognition should be organized at the bash script.~~
 
 - Add working with bash to automate install application on a new Linux VM
 
-- Add code to parse all Telegram user channels for looking up, messages by simple pattern(for the starting ). 
+- Add code to parse all Telegram user channels for looking up, messages by simple pattern(as for the starting point). 
 Use multithreading/multiprocessing/asyncio to parse multiple channels simultaneously. 
 
 
