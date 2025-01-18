@@ -35,6 +35,18 @@ fi
 
 get_restart_and_connection_info > ./startup_info
 
+# handle the case of first launch:
+# todo: this one makes app not scalable
+if [[ -f ./init_session.session ]]
+then
+  echo "Skipping Telegram login..."
+else
+  echo "Activate run with Telegram login..."
+  .venv/bin/python3.12 schedule_sender.py
+  exit 0
+fi
+
+
 .venv/bin/python3.12 schedule_sender.py >> ./startup_info 2>&1  || exit 1 &
 
 if [[ $1 == "-a" ]]

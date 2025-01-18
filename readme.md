@@ -44,7 +44,7 @@ Flag recognition should be organized at the bash script.~~
 Use multithreading/multiprocessing/asyncio to parse multiple channels simultaneously. 
 
 
-**Ideas for another project:**
+**Ideas for another projects:**
 
 - Index all messages from telegram to Azure AI search, implement search be key-words from telegram
 - Use Spark ML on Linux, to analyze through messages
