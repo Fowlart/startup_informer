@@ -8,8 +8,8 @@
 **How to Use:**
 1. Make the script executable: `chmod +x tg_startup_informer.sh`
 2. Add the script to your system startup process. Refer to your system's documentation 
-for specific instructions on how to do this (e.g., in my case, editing `/etc/profile`).
-3. Add credentials to the Keyring(see `utils.py` for name creds in correct way)
+for specific instructions on how to do this (e.g., in my case, editing `/etc/profile` to start the script on user login 
+and set up environment variables).
 
 ### Note:
 
@@ -28,7 +28,7 @@ for specific instructions on how to do this (e.g., in my case, editing `/etc/pro
 - Threading vs Multiprocessing
 - Asyncio
 - Virtual env
-- Working with dates[standart library]
+- Working with dates[standard library]
 
 **Todo:**
 
