@@ -39,7 +39,7 @@ git clone https://github.com/Fowlart/startup_informer.git
 
 **Todo:**
 
-- Add working with bash to automate install application on a new Linux VM
+- A~~dd working with bash to automate install application on a new Linux VM~~
 
 - Add code to parse all Telegram user channels for looking up, messages by simple pattern(as for the starting point). 
 Use multithreading/multiprocessing/asyncio to parse multiple channels simultaneously. 

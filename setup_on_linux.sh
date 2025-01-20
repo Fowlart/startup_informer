@@ -30,8 +30,6 @@ echo "$(pwd)/tg_startup_informer.sh" >> /etc/profile
 
 # 8. Telegram authentication (assuming a script exists)
 # Since this step involves user interaction, it's left for manual execution.
-# Place a placeholder comment to remind the user.
-# You can explore tools like expect for automation but it might be fragile.
 echo "Telegram authentication required for first launch. Please run the script manually."
 ./tg_startup_informer.sh
 # 9. Deactivate virtual environment (optional)
