@@ -5,11 +5,17 @@
 - All logs are sending to the Telegram.
 
 
-**How to Use:**
-1. Make the script executable: `chmod +x tg_startup_informer.sh`
-2. Add the script to your system startup process. Refer to your system's documentation 
-for specific instructions on how to do this (e.g., in my case, editing `/etc/profile` to start the script on user login 
-and set up environment variables).
+**How to install on Linux Ubuntu:**
+
+1/ fetch the project through /git clone: 
+git clone https://github.com/Fowlart/startup_informer.git
+
+2/ cd startup_informer
+
+3/ sudo ./setup_on_linux.sh
+
+4/ follow by white rabbit...
+
 
 ### Note:
 
