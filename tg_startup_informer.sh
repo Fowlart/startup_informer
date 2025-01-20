@@ -37,6 +37,8 @@ fi
 
 get_restart_and_connection_info > ./startup_info
 
+sudo chmod a+rwx ./startup_info
+
 # handle the case of first launch. Telegram authentication needed.
 # todo: this one makes app not scalable...
 if [[ -f ./init_session.session ]]
@@ -45,6 +47,7 @@ then
 else
   echo "Activate run with Telegram login..."
   .venv/bin/python3.12 schedule_sender.py
+  sudo chmod a+rwx ./init_session.session
   exit 0
 fi
 
