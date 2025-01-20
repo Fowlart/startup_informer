@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-echo "$SCRIPT_DIR"
+echo "Working directory $SCRIPT_DIR"
 cd $SCRIPT_DIR
 
 function get_restart_and_connection_info()
