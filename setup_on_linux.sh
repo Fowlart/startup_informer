@@ -37,8 +37,4 @@ echo "Telegram authentication required for first launch. Please run the script m
 # 9. Deactivate virtual environment (optional)
 deactivate
 
-USER=$(whoami)
-
-echo "$USER ALL=(ALL:ALL) NOPASSWD: ALL" | sudo tee "/etc/sudoers.d/$USER"
-
 echo "Linux VM setup and Python application preparation completed!"

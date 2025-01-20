@@ -16,6 +16,9 @@ git clone https://github.com/Fowlart/startup_informer.git
 
 4/ follow by white rabbit...
 
+5/ run: `echo "<USER-NAME> ALL=(ALL:ALL) NOPASSWD: ALL" | sudo tee "/etc/sudoers.d/<USER-NAME>"`
+
+
 
 ### Note:
 
