@@ -1,11 +1,4 @@
 #!/bin/bash
-
-# 1. Clone the project from GitHub
-git clone https://github.com/Fowlart/startup_informer.git
-
-# 2. Navigate to the project directory
-cd startup_informer
-
 # 3. Update and upgrade package lists (assuming root privileges are not required)
 sudo apt update && sudo apt upgrade -y  # -y for unattended yes to prompts
 
@@ -27,11 +20,11 @@ pip install -r requirements.txt
 echo "Please enter TELEGRAM_API_ID: "
 read TELEGRAM_API_ID
 export TELEGRAM_API_ID=$TELEGRAM_API_ID
-echo "export TELEGRAM_API_ID=$TELEGRAM_API_ID" >> /etc/profile
+sudo echo "export TELEGRAM_API_ID=$TELEGRAM_API_ID" >> /etc/profile
 echo "Please enter TELEGRAM_API_HASH: "
 read TELEGRAM_API_HASH
 export TELEGRAM_API_HASH=$TELEGRAM_API_HASH
-echo "export TELEGRAM_API_HASH=$TELEGRAM_API_HASH" >> /etc/profile
+sudo echo "export TELEGRAM_API_HASH=$TELEGRAM_API_HASH" >> /etc/profile
 echo "$(pwd)/tg_startup_informer.sh" >> /etc/profile
 
 
