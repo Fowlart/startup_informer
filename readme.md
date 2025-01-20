@@ -12,11 +12,9 @@ git clone https://github.com/Fowlart/startup_informer.git
 
 2/ cd startup_informer
 
-3/ sudo ./setup_on_linux.sh
+3/ **sudo** ./setup_on_linux.sh
 
-4/ follow by white rabbit...
-
-5/ run: `echo "<USER-NAME> ALL=(ALL:ALL) NOPASSWD: ALL" | sudo tee "/etc/sudoers.d/<USER-NAME>"`
+4/ carefully follow by white rabbit...
 
 
 
