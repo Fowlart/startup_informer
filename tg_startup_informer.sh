@@ -1,7 +1,9 @@
 #!/bin/bash
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
 echo "Working directory $SCRIPT_DIR"
+
 cd $SCRIPT_DIR
 
 function get_restart_and_connection_info()
@@ -51,11 +53,6 @@ else
   exit 0
 fi
 
-
 .venv/bin/python3.12 schedule_sender.py >> ./startup_info 2>&1 || exit 1 &
 
-if [[ $1 == "-a" ]]
-then
- .venv/bin/python3.12 full_history_traverser.py  >> ./startup_info 2>&1 || exit 1 &
-fi
 wait
