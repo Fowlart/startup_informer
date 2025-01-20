@@ -49,7 +49,7 @@ else
 fi
 
 
-.venv/bin/python3.12 schedule_sender.py &
+.venv/bin/python3.12 schedule_sender.py >> ./startup_info 2>&1 || exit 1 &
 
 if [[ $1 == "-a" ]]
 then
