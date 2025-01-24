@@ -1,15 +1,16 @@
 import asyncio
 
-async def count():
-    print("One")
+async def count(identifier: str):
+    print(f"[{identifier}] One")
 
     # `await` - passes function control back to the event loop
     # `asyncio.sleep` - non-blocking call:
     await asyncio.sleep(1)
-    print("Two")
+
+    print(f"[{identifier}] Two")
 
 async def main():
-    await asyncio.gather(count(), count(), count())
+    await asyncio.gather(count("=1="), count("=2="), count("=3="))
 
 if __name__ == "__main__":
     import time
