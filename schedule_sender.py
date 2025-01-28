@@ -16,6 +16,7 @@ async def print_family_schedule(client: TelegramClient):
             if (ms.message
                 and all( (phrase in  ms.message.lower()) is True for phrase in key_phrases)
                 and ms.date.date() > boundary_date_to_consider_messages
+                and ms.sender_id == wife
             ):
 
                 string_result.append(os.linesep)
