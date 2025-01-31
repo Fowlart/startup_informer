@@ -39,7 +39,7 @@ if __name__ == "__main__":
     print("Running async example: ")
     asyncio.run(coro)
 
-    print("Running sync example: ")
-    coro = main_sync([1,20,3,4])
-    asyncio.run(coro)
+    # print("Running sync example: ")
+    # coro = main_sync([1,20,3,4])
+    # asyncio.run(coro)
 
