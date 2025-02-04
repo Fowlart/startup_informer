@@ -40,13 +40,14 @@ git clone https://github.com/Fowlart/startup_informer.git
 **Todo:**
 
 - A~~dd working with bash to automate install application on a new Linux VM~~
-- Add code to parse all Telegram user channels for looking up, messages by simple pattern(as for the starting point). 
-Use multithreading/multiprocessing/asyncio to parse multiple channels simultaneously.
+- ~~Add code to parse all Telegram user channels for looking up, messages by simple pattern(as for the starting point). 
+Use multithreading/multiprocessing/asyncio to parse multiple channels simultaneously.~~
 - ~~Organize the possibility of starting the bash script with the flag to spin up separate processes, traversing all
 chat history in telegram without a time limit, and exporting it to the file. 
 Send the file for analysis. 
 A separate process should be created in Python. 
 Flag recognition should be organized at the bash script.~~
+- Use Spark on Linux to build delta tables from messages 
 
 
 **Ideas for another projects:**
