@@ -3,3 +3,4 @@ init_session.session
 .venv
 .idea
 /hiden_utils.py
+/dialogs/
