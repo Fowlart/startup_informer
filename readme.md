@@ -50,8 +50,7 @@ Flag recognition should be organized at the bash script.~~
 - Use Spark on Linux to build delta tables from messages 
 
 
-**Ideas for another projects:**
+**Ideas:**
 
-- Index all messages from telegram to Azure AI search, implement search be key-words from telegram
+- Index all messages from telegram to Azure AI search, implement search by key-words from telegram
 - Use Spark ML on Linux, to analyze through messages
-- Create a daemon which will track access to folders of interest in Linux, and will send notifications about
