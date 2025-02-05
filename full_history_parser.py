@@ -20,7 +20,7 @@ async def find_messages_in_dialog(dialog: Dialog,
 
     print(f"Processing dialog `{dialog.title}`")
 
-    async for m in client.iter_messages(entity=dialog.entity):
+    async for m in client.iter_messages(entity=dialog.entity, limit=None):
 
         message: Message = m
 
@@ -28,12 +28,12 @@ async def find_messages_in_dialog(dialog: Dialog,
 
         folder_name = dialog.title.replace(" ", "_").replace("/", "_")
 
-        if text_message and search_term.lower() in text_message.lower():
+        if text_message and ( search_term.lower() in text_message.lower() ):
 
             if not os.path.isdir(f"dialogs/{folder_name}"):
                 os.mkdir(f"dialogs/{folder_name}")
 
-            file_name = int(time.time())
+            file_name = time.time_ns()
 
             with codecs.open(f"./dialogs/{folder_name}/{file_name}.json", "w","utf-8","replace") as file:
                 # Data to be written
