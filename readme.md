@@ -48,9 +48,9 @@ Send the file for analysis.
 A separate process should be created in Python. 
 Flag recognition should be organized at the bash script.~~
 - Use Spark on Linux to build delta tables from messages 
+- Use spark ML to group Telegram messages into predefined topics
 
 
 **Ideas:**
 
 - Index all messages from telegram to Azure AI search, implement search by key-words from telegram
-- Use Spark ML on Linux, to analyze through messages
