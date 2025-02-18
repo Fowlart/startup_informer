@@ -24,7 +24,9 @@ async def main_async_slow():
 
     try:
         # asyncio.shield
-        result = await asyncio.wait_for(asyncio.shield(the_task),timeout=5)
+        shield_task = asyncio.wait_for(asyncio.shield(the_task),timeout=5)
+        print(type(shield_task))
+        result = await shield_task
         print(result)
     except asyncio.TimeoutError as err:
         print(f"Execution was interrupted: {err.errno}")

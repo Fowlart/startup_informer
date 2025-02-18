@@ -10,3 +10,4 @@ pyasn1==0.6.1
 pycparser==2.22
 rsa==4.9
 Telethon==1.38.1
+aiohttp

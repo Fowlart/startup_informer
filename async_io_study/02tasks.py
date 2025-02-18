@@ -19,10 +19,8 @@ async def main_async():
     the_task_2 = asyncio.create_task(basic_coroutine(random.randrange(8)))
     the_task_3 = asyncio.create_task(basic_coroutine(random.randrange(8)))
     the_task_4 = asyncio.create_task(basic_coroutine(random.randrange(8)))
-    print(f"{await the_task_1}, {the_task_1.get_name()} done?: {the_task_1.done()}")
-    print(f"{await the_task_2}, {the_task_2.get_name()} done?: {the_task_2.done()}")
-    print(f"{await the_task_3}, {the_task_3.get_name()} done?: {the_task_3.done()}")
-    print(f"{await the_task_4}, {the_task_4.get_name()} done?: {the_task_4.done()}")
+
+    print(f"Collected result {asyncio.gather(the_task_1, the_task_2, the_task_3, the_task_4)}")
 
 async def main_sync(wait_order: list[int]):
 
