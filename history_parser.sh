@@ -4,5 +4,6 @@ then
 else
    echo "Provided search term: $1"
    .venv/bin/python3.12 full_history_parser.py "$1" || exit 1
-   .venv/bin/python3.12 ./pyspark_interaction/create_delta_tables.py || 1
+   cd pyspark_interaction || exit 1
+   ../.venv/bin/python3.12 create_delta_tables.py || exit 1
 fi
