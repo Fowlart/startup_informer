@@ -4,3 +4,4 @@ init_session.session
 .idea
 /hiden_utils.py
 /dialogs/
+/dialogs_delta/

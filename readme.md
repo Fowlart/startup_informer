@@ -47,8 +47,8 @@ chat history in telegram without a time limit, and exporting it to the file.
 Send the file for analysis. 
 A separate process should be created in Python. 
 Flag recognition should be organized at the bash script.~~
-- Use Spark on Linux to build delta tables from messages 
-- Add Spark installation as a part of `setup_on_linux.sh`
+- ~~Use Spark on Linux to build delta tables from messages~~
+- Add data transformation for reach and informative table structure
 - Use spark ML to group Telegram messages into predefined topics
 
 

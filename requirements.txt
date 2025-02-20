@@ -12,3 +12,4 @@ rsa==4.9
 Telethon==1.38.1
 aiohttp
 pyspark
+delta-spark
