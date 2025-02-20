@@ -34,10 +34,9 @@ git clone https://github.com/Fowlart/startup_informer.git
 - editing `/etc/profile`
 
 **Python concepts to include and study:**
-- Threading vs Multiprocessing
 - Asyncio
 - Virtual env
-- Working with dates[standard library]
+- Processing data with Spark/SparkMl
 
 **Todo:**
 
