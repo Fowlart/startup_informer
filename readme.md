@@ -1,8 +1,10 @@
 # Telegram Linux Startup informer
 
-- This script parses system logs on startup to identify the last boot timestamp and the wifi connection used during the previous session. 
+- Application able to parse the Telegram messages and store them in delta-table format for further processing with the usage of ML techniques
 
-- All logs are sending to the Telegram.
+- Also, the app can parse system logs on PC/VM startup to identify the last boot timestamp and the wifi connection used during the previous session. 
+
+- We plan to create an interface for the application for working as Telegram Bot.
 
 
 **How to install on Linux Ubuntu:**
