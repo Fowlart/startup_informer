@@ -4,7 +4,7 @@
 
 - Also, the app can parse system logs on PC/VM startup to identify the last boot timestamp and the wifi connection used during the previous session. 
 
-- We plan to create an interface for the application for working as Telegram Bot.
+- We plan to create an interface for the application for user interaction via Telegram.
 
 
 **How to install on Linux Ubuntu:**
