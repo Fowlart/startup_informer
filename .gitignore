@@ -2,6 +2,6 @@ startup_info
 init_session.session
 .venv
 .idea
-/hiden_utils.py
+/utilities/hiden_utils.py
 /dialogs/
 /dialogs_delta/

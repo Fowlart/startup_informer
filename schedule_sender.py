@@ -1,11 +1,11 @@
 import os
-from utils import get_tg_client, send_msg_to_myself
+from utilities.utils import get_tg_client, send_msg_to_myself
 from telethon import TelegramClient
 import asyncio
 from telethon.tl.patched import Message
 import datetime
 import random
-from hiden_utils import get_schedule_source
+from utilities.hiden_utils import get_schedule_source
 
 async def send_msg(client: TelegramClient, ms: Message):
     string_result = [os.linesep, str(ms.date), ms.message]

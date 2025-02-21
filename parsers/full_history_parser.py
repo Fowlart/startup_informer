@@ -1,4 +1,3 @@
-import datetime
 import os
 import sys
 from asyncio import Task
@@ -9,10 +8,12 @@ from telethon.tl.custom.dialog import Dialog
 import asyncio
 import datetime as dt
 import json
-from utils import get_tg_client
 import shutil
 import codecs
 import time
+sys.path.append(os.path.abspath(os.path.join(".", "../startup_informer")))
+print(sys.path)
+from utilities.utils import get_tg_client
 
 async def find_messages_in_dialog(dialog: Dialog,
                                   client: TelegramClient,
@@ -34,6 +35,12 @@ async def find_messages_in_dialog(dialog: Dialog,
                 os.mkdir(f"dialogs/{folder_name}")
 
             file_name = time.time_ns()
+            lat = None
+            long = None
+            if message.geo:
+                lat = message.geo.lat
+                long = message.geo.long
+
 
             with codecs.open(f"./dialogs/{folder_name}/{file_name}.json", "w","utf-8","replace") as file:
                 # Data to be written
@@ -41,6 +48,12 @@ async def find_messages_in_dialog(dialog: Dialog,
                     "crawling_date": str(dt.datetime.now()),
                     "message_date": str(message.date.date()),
                     "message_text": text_message,
+                    "dialog": dialog.title,
+                    "post_author": message.post_author,
+                    "is_channel": message.is_channel,
+                    "is_group": message.is_group,
+                    "geo.lat": lat,
+                    "geo.long": long
                 }
 
                 json_object = json.dumps(json_record, indent=2,separators=(',', ':'),ensure_ascii=False)
@@ -60,10 +73,10 @@ async def traverse_full_history(client: TelegramClient, search_term: str):
 
 if __name__ =="__main__":
 
-    if os.path.isdir("dialogs"):
-        shutil.rmtree("dialogs")
+    if os.path.isdir("../dialogs"):
+        shutil.rmtree("../dialogs")
 
-    os.mkdir("dialogs")
+    os.mkdir("../dialogs")
 
     print(f"Starting of script execution `{os.path.basename(__file__)}`. PID: {os.getpid()}. Search term: `{sys.argv[1]}`")
 

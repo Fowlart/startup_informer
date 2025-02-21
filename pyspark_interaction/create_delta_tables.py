@@ -33,6 +33,7 @@ if __name__ == "__main__":
     (df
      .write
      .mode("overwrite")
+     .option("overwriteSchema","True")
      .format("delta")
      .save("../dialogs_delta"))
 
