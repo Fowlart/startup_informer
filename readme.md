@@ -50,6 +50,7 @@ A separate process should be created in Python.
 Flag recognition should be organized at the bash script.~~
 - ~~Use Spark on Linux to build delta tables from messages~~
 - Add data transformation for reach and informative table structure
+- Collect data in star table pattern database(users, messages)
 - Use spark ML to group Telegram messages into predefined topics
 
 
