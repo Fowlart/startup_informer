@@ -1,6 +1,7 @@
 import os
 import sys
 from asyncio import Task
+from logging import NullHandler
 
 from telethon import TelegramClient
 from telethon.tl.patched import Message
@@ -25,7 +26,7 @@ async def find_messages_in_dialog(dialog: Dialog,
 
         message: Message = m
 
-        text_message: str = message.message
+        text_message: str = message.raw_text
 
         folder_name = dialog.title.replace(" ", "_").replace("/", "_")
 
@@ -35,12 +36,9 @@ async def find_messages_in_dialog(dialog: Dialog,
                 os.mkdir(f"dialogs/{folder_name}")
 
             file_name = time.time_ns()
-            lat = None
-            long = None
-            if message.geo:
-                lat = message.geo.lat
-                long = message.geo.long
-
+            user: str = None
+            if message.sender:
+                user = str(message.sender)
 
             with codecs.open(f"./dialogs/{folder_name}/{file_name}.json", "w","utf-8","replace") as file:
                 # Data to be written
@@ -52,8 +50,7 @@ async def find_messages_in_dialog(dialog: Dialog,
                     "post_author": message.post_author,
                     "is_channel": message.is_channel,
                     "is_group": message.is_group,
-                    "geo.lat": lat,
-                    "geo.long": long
+                    "user": user
                 }
 
                 json_object = json.dumps(json_record, indent=2,separators=(',', ':'),ensure_ascii=False)
@@ -75,7 +72,6 @@ if __name__ =="__main__":
 
     if os.path.isdir("../dialogs"):
         shutil.rmtree("../dialogs")
-
     os.mkdir("../dialogs")
 
     print(f"Starting of script execution `{os.path.basename(__file__)}`. PID: {os.getpid()}. Search term: `{sys.argv[1]}`")
