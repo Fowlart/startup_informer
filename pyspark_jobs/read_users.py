@@ -1,5 +1,4 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, lit, input_file_name, to_date
 from delta import *
 
 if __name__ == "__main__":
@@ -15,9 +14,8 @@ if __name__ == "__main__":
     df = (spark
           .read
           .format("delta")
-          .option("recursiveFileLookup", "true")
-          .load("../dialogs_delta"))
+          .load("../user_table"))
 
-    df.show()
+    df.show(truncate=False)
 
     spark.stop()

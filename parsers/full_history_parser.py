@@ -1,7 +1,7 @@
 import os
 import sys
 from asyncio import Task
-from logging import NullHandler
+from typing import Any
 
 from telethon import TelegramClient
 from telethon.tl.patched import Message
@@ -16,9 +16,9 @@ sys.path.append(os.path.abspath(os.path.join(".", "../startup_informer")))
 print(sys.path)
 from utilities.utils import get_tg_client
 
-async def find_messages_in_dialog(dialog: Dialog,
-                                  client: TelegramClient,
-                                  search_term: str):
+async def find_and_ingest_messages(dialog: Dialog,
+                                   client: TelegramClient,
+                                   search_term: str):
 
     print(f"Processing dialog `{dialog.title}`")
 
@@ -36,9 +36,13 @@ async def find_messages_in_dialog(dialog: Dialog,
                 os.mkdir(f"dialogs/{folder_name}")
 
             file_name = time.time_ns()
-            user: str = None
-            if message.sender:
-                user = str(message.sender)
+
+            try:
+                sender_dict: dict[Any, Any] = message.sender.to_dict()
+                user = {str(k): str(v) for k, v in sender_dict.items()}
+            except Exception as e:
+                print(f"Error processing sender: {e}")
+                user = "no info"
 
             with codecs.open(f"./dialogs/{folder_name}/{file_name}.json", "w","utf-8","replace") as file:
                 # Data to be written
@@ -64,15 +68,15 @@ async def find_messages_in_dialog(dialog: Dialog,
 async def traverse_full_history(client: TelegramClient, search_term: str):
     tasks: list[Task] = []
     async for d in client.iter_dialogs():
-        tasks.append(client.loop.create_task(find_messages_in_dialog(client=client, dialog=d, search_term=search_term)))
+        tasks.append(client.loop.create_task(find_and_ingest_messages(client=client, dialog=d, search_term=search_term)))
 
     await asyncio.gather(*tasks)
 
 if __name__ =="__main__":
 
-    if os.path.isdir("../dialogs"):
-        shutil.rmtree("../dialogs")
-    os.mkdir("../dialogs")
+    if os.path.isdir("dialogs"):
+        shutil.rmtree("dialogs")
+    os.mkdir("dialogs")
 
     print(f"Starting of script execution `{os.path.basename(__file__)}`. PID: {os.getpid()}. Search term: `{sys.argv[1]}`")
 

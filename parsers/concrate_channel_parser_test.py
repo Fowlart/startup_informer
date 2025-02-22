@@ -9,14 +9,14 @@ sys.path.append(os.path.abspath(os.path.join(".", "../startup_informer")))
 print(sys.path)
 from utilities.utils import get_tg_client
 from utilities.hiden_utils import get_test_contact_name
-from full_history_parser import find_messages_in_dialog
+from full_history_parser import find_and_ingest_messages
 
 async def traverse_full_history(client: TelegramClient, search_term: str):
     tasks: list[Task] = []
     async for d in client.iter_dialogs():
         dial: Dialog = d
         if dial.title == get_test_contact_name():
-            tasks.append(client.loop.create_task(find_messages_in_dialog(client=client, dialog=d, search_term=search_term)))
+            tasks.append(client.loop.create_task(find_and_ingest_messages(client=client, dialog=d, search_term=search_term)))
     await asyncio.gather(*tasks)
 
 if __name__ =="__main__":

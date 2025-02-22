@@ -1,12 +1,26 @@
- if [[ $1 == "" ]]
+#!/bin/bash
+SPARK_JOB_FOLDER="pyspark_jobs"
+PATH_TO_PYTHON_INTERPRETER=.venv/bin/python3.12
+RED='\033[0;31m'
+NC='\033[0m' # No Color
+
+ function run_write_to_delta {
+   if [[ $1 == 0 ]]
+   then
+      cd $SPARK_JOB_FOLDER || exit 1
+      ../$PATH_TO_PYTHON_INTERPRETER create_delta_tables.py || exit 1
+   else
+      echo "${RED} script execution failed with the code $1 ${NC}"
+  fi
+ }
+
+if [[ $1 == "" ]]
 then
   echo "There are no search terms provided. Please add a string argument, to search among Telegram conversations. Starting test script!"
-  .venv/bin/python3.12 parsers/concrate_channel_parser_test.py || 1
-  cd pyspark_interaction || exit 1
-   ../.venv/bin/python3.12 create_delta_tables.py || exit 1
+  $PATH_TO_PYTHON_INTERPRETER parsers/concrate_channel_parser_test.py || exit 1
+  run_write_to_delta $?
 else
    echo "Provided search term: $1"
-   .venv/bin/python3.12 parsers/full_history_parser.py "$1" || exit 1
-   cd pyspark_interaction || exit 1
-   ../.venv/bin/python3.12 create_delta_tables.py || exit 1
+   $PATH_TO_PYTHON_INTERPRETER parsers/full_history_parser.py "$1" || exit 1
+   run_write_to_delta $?
 fi

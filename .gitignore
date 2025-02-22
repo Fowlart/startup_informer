@@ -5,3 +5,5 @@ init_session.session
 /utilities/hiden_utils.py
 /dialogs/
 /dialogs_delta/
+/message_table/
+/user_table/
