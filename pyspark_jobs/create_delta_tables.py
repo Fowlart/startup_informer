@@ -95,8 +95,7 @@ if __name__ == "__main__":
           .withColumn("message_date",to_date(col("message_date")))
           .orderBy(col("message_date").desc_nulls_last()))
 
-    # todo: rid of it
-    df.show(truncate=False)
+    df.explain(extended=True)
 
     (df
      .write
