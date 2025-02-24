@@ -53,3 +53,4 @@ Flag recognition should be organized at the bash script.~~
 - ~~Collect data in star table pattern database(users, messages)~~
 - Use spark ML to group Telegram messages into predefined topics
 - Index all messages from telegram to Azure AI search, implement search by key-words from telegram
+- Adjust Linux deployment
