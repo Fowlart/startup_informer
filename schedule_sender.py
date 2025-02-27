@@ -57,5 +57,5 @@ if __name__=="__main__":
 
     with client:
         client.loop.run_until_complete(send_msg_to_myself(client, msg))
-        client.loop.run_until_complete(print_family_schedule(client))
+       # client.loop.run_until_complete(print_family_schedule(client))
     print("Done.")
