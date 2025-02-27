@@ -14,7 +14,7 @@ if __name__ == "__main__":
     df = (spark
           .read
           .format("delta")
-          .load("../user_table"))
+          .load("./../user_table"))
 
     df.show(truncate=False)
 
