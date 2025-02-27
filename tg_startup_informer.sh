@@ -48,11 +48,9 @@ then
   echo "Skipping Telegram login..."
 else
   echo "Activate run with Telegram login..."
-  .venv/bin/python3.12 schedule_sender.py
-   chmod a+rwx ./init_session.session
+  .venv/bin/python3.12 ./execution_scenarios/schedule_sender.py
+  sudo chmod a+rwx ./init_session.session
   exit 0
 fi
 
-.venv/bin/python3.12 schedule_sender.py >> ./startup_info 2>&1 || exit 1 &
-
-wait
+.venv/bin/python3.12  ./execution_scenarios/schedule_sender.py

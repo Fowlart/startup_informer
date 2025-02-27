@@ -1,4 +1,6 @@
 import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(".", "../startup_informer")))
 from utilities.utils import get_tg_client, send_msg_to_myself
 from telethon import TelegramClient
 import asyncio
@@ -6,8 +8,8 @@ from telethon.tl.patched import Message
 import datetime
 import random
 
-def get_schedule_source():
-    return ""
+def __get_schedule_source():
+    return 553068238
 
 async def send_msg(client: TelegramClient, ms: Message):
     string_result = [os.linesep, str(ms.date), ms.message]
@@ -28,7 +30,7 @@ async def print_family_schedule(client: TelegramClient):
 
     tasks = []
 
-    async for m in client.iter_messages(entity=get_schedule_source()):
+    async for m in client.iter_messages(entity=__get_schedule_source()):
 
         ms: Message = m
 
@@ -37,7 +39,7 @@ async def print_family_schedule(client: TelegramClient):
         if (ms.message
                 and all((phrase in ms.message.lower()) is True for phrase in key_phrases)
                 and ms.date.date() > boundary_date_to_consider_messages
-                and ms.sender_id == get_schedule_source()):
+                and ms.sender_id == __get_schedule_source()):
 
             client.loop.create_task(send_msg(client=client, ms=ms))
            # tasks.append(client.loop.create_task(send_msg(client=client,ms=ms)))
@@ -48,7 +50,7 @@ if __name__=="__main__":
 
     print(f"{os.linesep*2}Starting of script execution `{os.path.basename(__file__)}`. PID {os.getpid()}")
 
-    with open("./startup_info") as f:
+    with open("startup_info") as f:
         lines = [x.strip() for x in f.readlines()]
 
     index_of_separator = lines.index("Connected wireless networks, in a recent 2 days")
@@ -59,5 +61,5 @@ if __name__=="__main__":
 
     with client:
         client.loop.run_until_complete(send_msg_to_myself(client, msg))
-       # client.loop.run_until_complete(print_family_schedule(client))
+        client.loop.run_until_complete(print_family_schedule(client))
     print("Done.")
