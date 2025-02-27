@@ -30,7 +30,7 @@ echo "Please enter TELEGRAM_API_HASH: "
 read TELEGRAM_API_HASH
 export TELEGRAM_API_HASH=$TELEGRAM_API_HASH
 sudo echo "export TELEGRAM_API_HASH=$TELEGRAM_API_HASH" >> /etc/profile
-echo "$(pwd)/tg_startup_informer.sh" >> /etc/profile
+sudo echo "$(pwd)/tg_startup_informer.sh" >> /etc/profile
 
 
 # 8. Telegram authentication (assuming a script exists)
