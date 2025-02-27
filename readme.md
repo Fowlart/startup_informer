@@ -18,8 +18,6 @@ git clone https://github.com/Fowlart/startup_informer.git
 
 4/ carefully follow by white rabbit...
 
-
-
 ### Note:
 
 * This script requires root privileges to access system logs.
@@ -51,6 +49,7 @@ Flag recognition should be organized at the bash script.~~
 - ~~Use Spark on Linux to build delta tables from messages~~
 - ~~Add data transformation for reach and informative table structure~~
 - ~~Collect data in star table pattern database(users, messages)~~
+- ~~Adjust Linux deployment~~ 
 - Use spark ML to label Telegram messages with predefined captions( supervised Learning/multiclass classification )
 - Index all messages from telegram to Azure AI search, implement search by key-words from telegram
-- Adjust Linux deployment [Java setup]
+- Add Spark reading and writing analyzed data to the Azure blob storage (will reduce local paths resolution need, and will allow Spark local script execution)   
