@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import RFormula
 
-PATH_TO_DATA_ROOT = "./../../../synthetic_data"
+PATH_TO_DATA_ROOT = "./synthetic_data"
 
 if __name__=="__main__":
 
