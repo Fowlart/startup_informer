@@ -1,6 +1,8 @@
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import RFormula, Tokenizer, StandardScaler
 
+from studies.spark_MLlib.transformers import PATH_TO_DATA_ROOT
+
 if __name__=="__main__":
 
     spark = (SparkSession
@@ -13,7 +15,7 @@ if __name__=="__main__":
              .format("csv")
              .option("header", "true")
              .option("inferSchema", "true")
-             .load("/home/artur/PycharmProjects/Spark-The-Definitive-Guide/data/retail-data/by-day/*.csv")
+             .load(f"{PATH_TO_DATA_ROOT}/retail-data/by-day/*.csv")
              .coalesce(5)
              .where("Description IS NOT NULL"))
 

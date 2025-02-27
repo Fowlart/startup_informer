@@ -1,0 +1,1 @@
+PATH_TO_DATA_ROOT = "./../../../synthetic_data"

@@ -1,6 +1,8 @@
 from pyspark.ml.feature import VectorAssembler
 from pyspark.sql import SparkSession
 
+from studies.spark_MLlib.transformers import PATH_TO_DATA_ROOT
+
 if __name__=="__main__":
 
     spark = (SparkSession
@@ -10,7 +12,7 @@ if __name__=="__main__":
 
     fakeIntDF = (spark.
                  read.
-                 parquet("/home/artur/PycharmProjects/Spark-The-Definitive-Guide/data/simple-ml-integers"))
+                 parquet(f"{PATH_TO_DATA_ROOT}/simple-ml-integers"))
 
     va = VectorAssembler().setInputCols(["int1","int2","int3"]).setOutputCol("assembled")
 

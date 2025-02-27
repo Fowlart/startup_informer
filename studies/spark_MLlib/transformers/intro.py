@@ -1,6 +1,8 @@
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import RFormula
 
+from studies.spark_MLlib.transformers import PATH_TO_DATA_ROOT
+
 if __name__=="__main__":
 
     spark = (SparkSession
@@ -10,7 +12,7 @@ if __name__=="__main__":
 
     df = (spark
           .read
-          .json("/home/artur/PycharmProjects/Spark-The-Definitive-Guide/data/simple-ml"))
+          .json(f"{PATH_TO_DATA_ROOT}/simple-ml"))
 
     df.show(300, truncate=False)
 
