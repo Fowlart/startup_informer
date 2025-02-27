@@ -14,3 +14,4 @@ aiohttp
 pyspark
 delta-spark
 numpy
+setuptools
