@@ -14,7 +14,9 @@ def __get_schedule_source():
 async def send_msg(client: TelegramClient, ms: Message):
     string_result = [os.linesep, str(ms.date), ms.message]
     print(f"Sending message with date: {ms.date}")
-    await client.send_message("me", os.linesep.join(string_result))
+    text = os.linesep.join(string_result)
+    print(text)
+    await client.send_message("me", text)
 
     # code below will make the async nature of the method more visible since the actual telegram
     # API calls happen nearly at the same time
