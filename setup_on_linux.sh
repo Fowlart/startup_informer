@@ -2,10 +2,15 @@
 # 3. Update and upgrade package lists (assuming root privileges are not required)
 sudo apt update && sudo apt upgrade -y  # -y for unattended yes to prompts
 
-# 4. Install python3.12-venv (check if already installed)
+# 4. Install python3.12-venv, java (check if already installed)
 if ! command -v python3.12-venv &> /dev/null
 then
   sudo apt install python3.12-venv
+fi
+
+if ! command -v java -version &> /dev/null
+then
+  sudo sudo apt install openjdk-11-jre-headless
 fi
 
 # 5. Create virtual environment
