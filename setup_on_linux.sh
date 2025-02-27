@@ -25,12 +25,12 @@ pip install -r requirements.txt
 echo "Please enter TELEGRAM_API_ID: "
 read TELEGRAM_API_ID
 export TELEGRAM_API_ID=$TELEGRAM_API_ID
-sudo echo "export TELEGRAM_API_ID=$TELEGRAM_API_ID" >> /etc/profile
+sudo echo "export TELEGRAM_API_ID=$TELEGRAM_API_ID" | sudo tee -a /etc/profile
 echo "Please enter TELEGRAM_API_HASH: "
 read TELEGRAM_API_HASH
 export TELEGRAM_API_HASH=$TELEGRAM_API_HASH
-sudo echo "export TELEGRAM_API_HASH=$TELEGRAM_API_HASH" >> /etc/profile
-sudo echo "$(pwd)/tg_startup_informer.sh" >> /etc/profile
+sudo echo "export TELEGRAM_API_HASH=$TELEGRAM_API_HASH" | sudo tee -a /etc/profile
+sudo echo "$(pwd)/execution_scenarios/tg_startup_informer.sh" | sudo tee -a /etc/profile
 
 
 # 8. Telegram authentication (assuming a script exists)
