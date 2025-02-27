@@ -43,9 +43,8 @@ async def print_family_schedule(client: TelegramClient):
                 and ms.date.date() > boundary_date_to_consider_messages
                 and ms.sender_id == __get_schedule_source()):
 
-            client.loop.create_task(send_msg(client=client, ms=ms))
-           # tasks.append(client.loop.create_task(send_msg(client=client,ms=ms)))
-    # await asyncio.gather(*tasks)
+            tasks.append(client.loop.create_task(send_msg(client=client,ms=ms)))
+    await asyncio.gather(*tasks)
 
 
 if __name__=="__main__":
