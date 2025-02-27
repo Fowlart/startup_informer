@@ -5,7 +5,7 @@ if __name__ == "__main__":
 
     builder = (SparkSession
         .builder
-        .appName("Read-message-delta-table")
+        .appName("read-message-delta-table")
         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
         .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog"))
 

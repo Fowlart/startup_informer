@@ -13,3 +13,4 @@ Telethon==1.38.1
 aiohttp
 pyspark
 delta-spark
+numpy
