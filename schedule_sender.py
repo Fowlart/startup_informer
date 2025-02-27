@@ -5,7 +5,9 @@ import asyncio
 from telethon.tl.patched import Message
 import datetime
 import random
-from utilities.hiden_utils import get_schedule_source
+
+def get_schedule_source():
+    return ""
 
 async def send_msg(client: TelegramClient, ms: Message):
     string_result = [os.linesep, str(ms.date), ms.message]
