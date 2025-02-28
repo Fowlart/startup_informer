@@ -1,13 +1,11 @@
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import SQLTransformer
 
-from studies.spark_MLlib.transformers import PATH_TO_DATA_ROOT
-
 if __name__=="__main__":
 
     spark = (SparkSession
                .builder
-               .appName("basic-ml-pipline")
+               .appName("sql-transformers")
                .getOrCreate())
 
     sales = (spark
@@ -15,7 +13,7 @@ if __name__=="__main__":
              .format("csv")
              .option("header", "true")
              .option("inferSchema", "true")
-             .load(f"{PATH_TO_DATA_ROOT}/retail-data/by-day/*.csv")
+             .load(f"./../../synthetic_data/retail-data/by-day/*.csv")
              .coalesce(5)
              .where("Description IS NOT NULL"))
 
