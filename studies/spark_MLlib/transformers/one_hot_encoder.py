@@ -7,14 +7,14 @@ if __name__=="__main__":
 
     df = (spark.read.json(f"./../../../synthetic_data/simple-ml"))
 
-    labeled = ( StringIndexer().setInputCol("color").setOutputCol("color_index"))
+    string_label_indexer = (StringIndexer().setInputCol("color").setOutputCol("color_index"))
 
-    colorLab = labeled.fit(df).transform(df.select("color"))
+    color_labelled_df = string_label_indexer.fit(df).transform(df.select("color"))
 
-    # colorLab.show(truncate=False)
+    color_labelled_df.show(truncate=False)
 
     ohe = OneHotEncoder().setInputCol("color_index")
 
-    ohe.fit(colorLab).transform(colorLab).show(truncate=False)
+    ohe.fit(color_labelled_df).transform(color_labelled_df).show(truncate=False)
 
     spark.stop()
