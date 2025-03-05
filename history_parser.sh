@@ -18,10 +18,10 @@ NC='\033[0m' # No Color
 if [[ $1 == "" ]]
 then
   echo "There are no search terms provided. Please add a string argument, to search among Telegram conversations. Starting test script!"
-  $PATH_TO_PYTHON_INTERPRETER ingestion/concrate_channel_parser_test.py || exit 1
+  $PATH_TO_PYTHON_INTERPRETER ingestion/parse_concrete_channel_history.py || exit 1
   run_write_to_delta $?
 else
    echo "Provided search term: $1"
-   $PATH_TO_PYTHON_INTERPRETER ingestion/full_history_parser.py "$1" || exit 1
+   $PATH_TO_PYTHON_INTERPRETER ingestion/parse_history.py "$1" || exit 1
    run_write_to_delta $?
 fi

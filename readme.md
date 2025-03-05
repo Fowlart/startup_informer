@@ -50,6 +50,7 @@ Flag recognition should be organized at the bash script.~~
 - ~~Add data transformation for reach and informative table structure~~
 - ~~Collect data in star table pattern database(users, messages)~~
 - ~~Adjust Linux deployment~~ 
+- implement the tf/idf algorithm to find keywords in each message within the concrete channel
 - Use spark ML to label Telegram messages with predefined captions( supervised Learning/multiclass classification )
 - Index all messages from telegram to Azure AI search, implement search by key-words from telegram
 - Add Spark reading and writing analyzed data to the Azure blob storage (will reduce local paths resolution need, and will allow Spark local script execution)   
