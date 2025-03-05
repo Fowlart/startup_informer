@@ -12,9 +12,11 @@ from utilities.utils import execute_init_procedure
 
 async def traverse_full_history(client: TelegramClient, search_term: str = ""):
     tasks: list[Task] = []
+    channel_to_parse = os.getenv("SPECIFIC_DIALOG")
+
     async for d in client.iter_dialogs():
         dialog_casted: Dialog = d
-        if dialog_casted.title == "Olena":
+        if dialog_casted.title.lower() == channel_to_parse.lower():
             tasks.append(client.loop.create_task(find_and_ingest_messages(client=client,
                                                                           dialog=d,
                                                                           search_term=search_term)))
