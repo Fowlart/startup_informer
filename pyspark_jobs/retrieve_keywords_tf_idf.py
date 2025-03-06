@@ -46,7 +46,7 @@ if __name__ == "__main__":
           .withColumn("tokens",extract_tokens_udf(col("message_text"))))
 
     # write an intermediate step to the disk for analysis
-    df.write.json(path="./../key_words_extraction/debug_key_words_step_1/")
+    df.write.json(path="./../key_words_extraction/debug_key_words_step_1/", mode="overwrite")
 
     # todo: use tf/idf
 
