@@ -7,3 +7,4 @@ init_session.session
 /dialogs_delta/
 /message_table/
 /user_table/
+/key_words_extraction/

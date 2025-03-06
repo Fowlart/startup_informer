@@ -15,3 +15,9 @@ pyspark
 delta-spark
 numpy
 setuptools
+# AZURE ai services
+azure-ai-textanalytics==5.2.0
+azure-cognitiveservices-speech==1.41.1
+azure-common==1.1.28
+azure-core==1.32.0
+azure-search-documents==11.5.2
