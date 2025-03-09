@@ -1,6 +1,10 @@
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import udf, col
+from pyspark.sql import SparkSession, Column
+from pyspark.sql.functions import udf, col, filter, regexp_extract
+from pyspark.sql.functions import length as spark_length
 from pyspark.sql.types import ArrayType,StringType
+from pyspark.ml.feature import HashingTF, IDF
+
+
 from delta import *
 from azure_ai_utils import analyze_text
 
@@ -22,7 +26,11 @@ def extract_tokens_udf(input_text: str) -> list[str]:
 
     return [token_obj["token"] for token_obj in tokens_obj_list if "token" in token_obj]
 
+def _filter_words_with_digits(x: col)->Column:
+    return regexp_extract(x, r"\d", 0) == ""
 
+def _words_length_filter(x: col) -> Column:
+    return spark_length(x)>=3
 
 if __name__ == "__main__":
 
@@ -41,13 +49,38 @@ if __name__ == "__main__":
           .load("./../message_table")
           .select("dialog","user.id","message_date","message_text")
           # take first for analysing
-          .limit(20)
           .withColumnRenamed("id","user_id")
-          .withColumn("tokens",extract_tokens_udf(col("message_text"))))
+          .filter(col("user_id")=="553068238")
+          #.limit(20)
+          .withColumn("tokens",extract_tokens_udf(col("message_text")))
+          .withColumn("tokens", filter(col("tokens"), _words_length_filter))
+          .withColumn("tokens",filter(col("tokens"),_filter_words_with_digits)))
 
     # write an intermediate step to the disk for analysis
-    df.write.json(path="./../key_words_extraction/debug_key_words_step_1/", mode="overwrite")
+    (df
+     .write
+     .json(path="./../key_words_extraction/debug_key_words_step_1/", mode="overwrite"))
 
-    # todo: use tf/idf
+    # tf/idf
+    tf = (
+        HashingTF()
+        .setInputCol("tokens")
+        .setOutputCol("tf_out")
+        .setNumFeatures(10000))
+
+    idf = (
+        IDF()
+        .setInputCol("tf_out")
+        .setOutputCol("idf_out")
+        .setMinDocFreq(2))
+
+    tf_transformed = tf.transform(df)
+
+    (idf
+     .fit(tf_transformed)
+     .transform(tf_transformed)
+     .write
+     .json(path="./../key_words_extraction/debug_key_words_step_2/", mode="overwrite"))
+
 
     spark.stop()
