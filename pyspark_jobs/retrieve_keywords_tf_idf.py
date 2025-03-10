@@ -47,40 +47,47 @@ if __name__ == "__main__":
           .read
           .format("delta")
           .load("./../message_table")
+          .limit(20)
           .select("dialog","user.id","message_date","message_text")
-          # take first for analysing
           .withColumnRenamed("id","user_id")
           .filter(col("user_id")=="553068238")
-          #.limit(20)
           .withColumn("tokens",extract_tokens_udf(col("message_text")))
           .withColumn("tokens", filter(col("tokens"), _words_length_filter))
-          .withColumn("tokens",filter(col("tokens"),_filter_words_with_digits)))
+          .withColumn("tokens",filter(col("tokens"),_filter_words_with_digits))
+          # take first for analysing
+          )
 
     # write an intermediate step to the disk for analysis
-    (df
-     .write
-     .json(path="./../key_words_extraction/debug_key_words_step_1/", mode="overwrite"))
+    df.write.json(path="./../key_words_extraction/debug_key_words_step_1/", mode="overwrite")
 
-    # tf/idf
+    # spark tf/idf
     tf = (
         HashingTF()
         .setInputCol("tokens")
         .setOutputCol("tf_out")
+        # todo: count qty of unique tokens
         .setNumFeatures(10000))
 
     idf = (
         IDF()
         .setInputCol("tf_out")
         .setOutputCol("idf_out")
-        .setMinDocFreq(2))
+        .setMinDocFreq(3))
 
     tf_transformed = tf.transform(df)
 
-    (idf
+    df_with_idf_info = (idf
      .fit(tf_transformed)
      .transform(tf_transformed)
+     .select("user_id",
+             "message_date",
+             "message_text",
+             "tokens",
+             "idf_out"
+             ))
+
+    (df_with_idf_info
      .write
      .json(path="./../key_words_extraction/debug_key_words_step_2/", mode="overwrite"))
-
 
     spark.stop()
