@@ -79,7 +79,6 @@ if __name__ == "__main__":
         HashingTF()
         .setInputCol("tokens")
         .setOutputCol("tf_out")
-        #todo: count qty of unique tokens
         .setNumFeatures(len(dictionary)))
 
     idf = (
