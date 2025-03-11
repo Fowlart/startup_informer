@@ -12,6 +12,10 @@ rsa==4.9
 Telethon==1.38.1
 aiohttp
 pyspark
+pandas
+PyArrow
+grpcio
+protobuf
 delta-spark
 numpy
 setuptools
@@ -21,3 +25,5 @@ azure-cognitiveservices-speech==1.41.1
 azure-common==1.1.28
 azure-core==1.32.0
 azure-search-documents==11.5.2
+# Databricks
+databricks-sdk

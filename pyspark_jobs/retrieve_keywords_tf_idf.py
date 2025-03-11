@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession, Column
-from pyspark.sql.functions import udf, col, filter, regexp_extract
-from pyspark.sql.functions import length as spark_length
+from pyspark.sql.functions import udf, col, filter, regexp_extract, length, collect_set, flatten, explode, collect_list, \
+    size, array_distinct
+from pyspark.sql.window import Window
 from pyspark.sql.types import ArrayType,StringType
 from pyspark.ml.feature import HashingTF, IDF
 
@@ -30,7 +31,7 @@ def _filter_words_with_digits(x: col)->Column:
     return regexp_extract(x, r"\d", 0) == ""
 
 def _words_length_filter(x: col) -> Column:
-    return spark_length(x)>=3
+    return length(x)>=3
 
 if __name__ == "__main__":
 
@@ -47,15 +48,33 @@ if __name__ == "__main__":
           .read
           .format("delta")
           .load("./../message_table")
-          .limit(20)
-          .select("dialog","user.id","message_date","message_text")
+          .select("dialog", "user.id", "message_date", "message_text")
           .withColumnRenamed("id","user_id")
-          .filter(col("user_id")=="553068238")
+          .filter(col("user_id") == "553068238")
+
+           #todo: limit will speed up the process, remove after testing
+           #.limit(30)
+
           .withColumn("tokens",extract_tokens_udf(col("message_text")))
           .withColumn("tokens", filter(col("tokens"), _words_length_filter))
           .withColumn("tokens",filter(col("tokens"),_filter_words_with_digits))
-          # take first for analysing
           )
+
+    window_definition = Window.rowsBetween(start=Window.unboundedPreceding,end=0)
+
+    dictionary_df = (df
+                     .withColumn("dict",array_distinct(flatten(collect_list(col("tokens")).over(window_definition))))
+                     .withColumn("dict_size",size(col("dict")))
+                     .orderBy(col("dict_size").desc())
+                     .limit(1)
+                     )
+
+    dictionary_df.write.json(path="./../key_words_extraction/debug_dictionary/", mode="overwrite")
+
+    dictionary = dictionary_df.take(1)[0]["dict"]
+
+    print(f"The dictionary: {dictionary}")
+    print(f"The dictionary length: {len(dictionary)}")
 
     # write an intermediate step to the disk for analysis
     df.write.json(path="./../key_words_extraction/debug_key_words_step_1/", mode="overwrite")
@@ -65,8 +84,8 @@ if __name__ == "__main__":
         HashingTF()
         .setInputCol("tokens")
         .setOutputCol("tf_out")
-        # todo: count qty of unique tokens
-        .setNumFeatures(10000))
+        #todo: count qty of unique tokens
+        .setNumFeatures(len(dictionary)))
 
     idf = (
         IDF()
