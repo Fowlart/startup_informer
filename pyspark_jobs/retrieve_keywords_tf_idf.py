@@ -53,7 +53,7 @@ if __name__ == "__main__":
           .filter(col("user_id") == "553068238")
 
            #todo: limit will speed up the process, remove after testing
-           #.limit(30)
+           .limit(30)
 
           .withColumn("tokens",extract_tokens_udf(col("message_text")))
           .withColumn("tokens", filter(col("tokens"), _words_length_filter))
@@ -69,15 +69,10 @@ if __name__ == "__main__":
                      .limit(1)
                      )
 
-    dictionary_df.write.json(path="./../key_words_extraction/debug_dictionary/", mode="overwrite")
-
     dictionary = dictionary_df.take(1)[0]["dict"]
 
     print(f"The dictionary: {dictionary}")
     print(f"The dictionary length: {len(dictionary)}")
-
-    # write an intermediate step to the disk for analysis
-    df.write.json(path="./../key_words_extraction/debug_key_words_step_1/", mode="overwrite")
 
     # spark tf/idf
     tf = (
@@ -105,8 +100,11 @@ if __name__ == "__main__":
              "idf_out"
              ))
 
-    (df_with_idf_info
-     .write
-     .json(path="./../key_words_extraction/debug_key_words_step_2/", mode="overwrite"))
+    # write an intermediate steps to the disk for analysis
+    dictionary_df.write.json(path="./../key_words_extraction/debug_dictionary/", mode="overwrite")
+
+    df.write.json(path="./../key_words_extraction/debug_key_words_step_1/", mode="overwrite")
+
+    (df_with_idf_info.write.json(path="./../key_words_extraction/debug_key_words_step_2/", mode="overwrite"))
 
     spark.stop()
