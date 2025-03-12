@@ -44,8 +44,10 @@ def extract_keywords_udf(tfidf_vector, vocabulary: list[str]):
 
     return top_keywords
 
+
 def _filter_words_with_digits(x: col)->Column:
     return regexp_extract(x, r"\d", 0) == ""
+
 
 def _words_length_filter(x: col) -> Column:
     return length(x)>=3
