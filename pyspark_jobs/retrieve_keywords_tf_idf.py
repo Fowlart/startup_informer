@@ -36,7 +36,7 @@ def extract_keywords_udf(tfidf_vector, vocabulary: list[str]):
 
     for i, tfidf_score in enumerate(tfidf_vector):
 
-        if tfidf_score > configuration["min_tf_idf_keyword_score"]:
+        if tfidf_score >= configuration["min_tf_idf_keyword_score"]:
             word_tfidf_pairs.append((tfidf_score, vocabulary[i]))
 
     sorted_pairs = sorted(word_tfidf_pairs, key=lambda x: x[0], reverse=True)
@@ -56,12 +56,11 @@ def _words_length_filter(x: col) -> Column:
 if __name__ == "__main__":
 
     configuration =({
-        "min_tf_idf_keyword_score": 2,
+        "min_tf_idf_keyword_score": 3,
         "min_token_length": 3,
         "min_df": 1,
         "min_tf": 1,
-        "number_messages_to_take": sys.maxsize,
-        "number_messages_to_take": 60
+        "number_messages_to_take": 100000
         })
 
     builder = (SparkSession
@@ -110,7 +109,6 @@ if __name__ == "__main__":
 
     # write an intermediate steps to the disk for debug and analysis
     ddf_with_keywords.select(["user_id", "message_date","tokens","keywords"]).write.json(path="./../key_words_extraction/df_with_keywords/", mode="overwrite")
-    df.write.json(path="./../key_words_extraction/debug_key_words_step_1/", mode="overwrite")
-    df_with_idf_info.write.json(path="./../key_words_extraction/debug_key_words_step_2/", mode="overwrite")
+    df.write.json(path="./../key_words_extraction/df_with_tokens/", mode="overwrite")
 
     spark.stop()
