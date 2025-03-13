@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession, Column
-from pyspark.sql.functions import udf, col, filter, regexp_extract, length, explode, lit, array, collect_set
+from pyspark.sql.functions import udf, col, filter, regexp_extract, length, lit, array
 from pyspark.sql.types import ArrayType,StringType
-from pyspark.ml.feature import HashingTF, IDF, CountVectorizer
+from pyspark.ml.feature import IDF, CountVectorizer
 
 from delta import *
 from azure_ai_utils import analyze_text
@@ -72,7 +72,7 @@ if __name__ == "__main__":
           .filter(col("user_id") == "553068238")
 
            #todo: limit will speed up the process, remove after testing
-           #.limit(30)
+          .limit(30)
 
           .withColumn("tokens",extract_tokens_udf(col("message_text")))
           .withColumn("tokens", filter(col("tokens"), _words_length_filter))
@@ -82,8 +82,7 @@ if __name__ == "__main__":
     # spark tf/idf
     cv = CountVectorizer(inputCol="tokens", outputCol="tf_out")
     cv_model = cv.fit(df)
-    df_tf = cv_model.transform(df)
-
+    vectorized_tokens_df = cv_model.transform(df)
 
     idf = (
         IDF()
@@ -92,8 +91,8 @@ if __name__ == "__main__":
         .setMinDocFreq(2))
 
     df_with_idf_info = (idf
-     .fit(df_tf)
-     .transform(df_tf)
+     .fit(vectorized_tokens_df)
+     .transform(vectorized_tokens_df)
      .select("user_id",
              "message_date",
              "message_text",
@@ -103,16 +102,10 @@ if __name__ == "__main__":
 
     # Apply the UDF
     dictionary = cv_model.vocabulary
-    dict_df = (spark.sparkContext
-               .parallelize(dictionary)
-               .map(lambda x:(x,)).toDF(["terms"])
-               .groupBy()
-               .agg(collect_set("terms").alias("terms_array"))
-               .select("terms_array"))
 
-    dict_df.show()
-
-    ddf_with_keywords = dict_df.crossJoin(df_with_idf_info).withColumn("keywords", extract_keywords_udf(col("idf_out"), col("terms_array")))
+    ddf_with_keywords = (df_with_idf_info
+                         .withColumn("dictionary",array(*[lit(w) for w in dictionary]))
+                         .withColumn("keywords", extract_keywords_udf(col("idf_out"), col("dictionary"))))
 
     # write an intermediate steps to the disk for debug and analysis
     ddf_with_keywords.select(["user_id", "message_date","tokens","keywords"]).write.json(path="./../key_words_extraction/result/", mode="overwrite")
