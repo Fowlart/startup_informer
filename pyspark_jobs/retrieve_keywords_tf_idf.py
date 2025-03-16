@@ -1,11 +1,9 @@
-import sys
 from pyspark.sql import SparkSession, Column
 from pyspark.sql.functions import udf, col, filter, regexp_extract, length, lit, array
 from pyspark.sql.types import ArrayType,StringType
 from pyspark.ml.feature import IDF, CountVectorizer
-
 from delta import *
-from azure_ai_utils import analyze_text
+from azure_ai_utils import _analyze_text, extract_key_phrases
 
 
 @udf(returnType=ArrayType(StringType()))
@@ -19,7 +17,7 @@ def extract_tokens_udf(input_text: str) -> list[str]:
     Returns:
         A list of tokens extracted from the text.
     """
-    tokens_obj_list: list[dict[str, str]] = analyze_text(
+    tokens_obj_list: list[dict[str, str]] = _analyze_text(
         input_text, analyzer_name="uk.microsoft"
     )
 
@@ -45,6 +43,9 @@ def extract_keywords_udf(tfidf_vector, vocabulary: list[str]):
 
     return top_keywords
 
+@udf(returnType=ArrayType(StringType()))
+def extract_keywords_with_azure_udf(input_text: str) ->list[str]:
+    return extract_key_phrases(text=input_text, language="uk")
 
 def _filter_words_with_digits(x: col)->Column:
     return regexp_extract(x, r"\d", 0) == ""
@@ -54,13 +55,12 @@ def _words_length_filter(x: col) -> Column:
     return length(x)>=configuration["min_token_length"]
 
 if __name__ == "__main__":
-
     configuration =({
-        "min_tf_idf_keyword_score": 3,
+        "min_tf_idf_keyword_score": 2,
         "min_token_length": 3,
         "min_df": 2,
         "min_tf": 1,
-        "number_messages_to_take": 100000
+        "number_messages_to_take": 500000
         })
 
     builder = (SparkSession
@@ -105,10 +105,15 @@ if __name__ == "__main__":
 
     ddf_with_keywords = (df_with_idf_info
                          .withColumn("dictionary",array(*[lit(w) for w in dictionary]))
-                         .withColumn("keywords", extract_keywords_udf(col("idf_out"), col("dictionary"))))
+                         .withColumn("keywords_tf_idf", extract_keywords_udf(col("idf_out"), col("dictionary")))
+                         .withColumn("keywords_azure",extract_keywords_with_azure_udf(col("message_text"))))
 
     # write an intermediate steps to the disk for debug and analysis
-    ddf_with_keywords.select(["user_id", "message_date","tokens","keywords"]).write.json(path="./../key_words_extraction/df_with_keywords/", mode="overwrite")
+    (ddf_with_keywords
+     .select(["user_id", "message_date","tokens","keywords_tf_idf","keywords_azure"])
+     .write
+     .json(path="./../key_words_extraction/df_with_keywords/", mode="overwrite"))
+
     df.write.json(path="./../key_words_extraction/df_with_tokens/", mode="overwrite")
 
     spark.stop()
