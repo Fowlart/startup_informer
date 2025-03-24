@@ -53,6 +53,7 @@ Flag recognition should be organized at the bash script.~~
 
 - implement the tf/idf algorithm to find keywords in each message within the concrete channel
   - ~~Include the usage of the Azure tokenizer for creating  tokens out of messages using Ukraine language~~
+  
   - Automate creation of the needed azure resources during the first set-up on the Ubuntu VM
 
 - Use spark ML to label Telegram messages with predefined captions( supervised Learning/multiclass classification )
