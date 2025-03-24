@@ -56,5 +56,9 @@ Flag recognition should be organized at the bash script.~~
   - Automate creation of the needed azure resources during the first set-up on the Ubuntu VM
 
 - Use spark ML to label Telegram messages with predefined captions( supervised Learning/multiclass classification )
+
+- Use embeddings to group similar messages together
+
 - Index all messages from telegram to Azure AI search, implement search by key-words from telegram
+
 - Add Spark reading and writing analyzed data to the Azure blob storage (will reduce local paths resolution need, and will allow Spark local script execution)   
