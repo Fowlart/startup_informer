@@ -19,6 +19,7 @@ protobuf
 delta-spark
 numpy
 setuptools
+dotenv
 # AZURE ai services
 azure-ai-textanalytics==5.2.0
 azure-cognitiveservices-speech==1.41.1
@@ -27,3 +28,4 @@ azure-core==1.32.0
 azure-search-documents==11.5.2
 # Databricks
 databricks-sdk
+databricks-vectorsearch
