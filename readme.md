@@ -53,8 +53,8 @@ Flag recognition should be organized at the bash script.~~
 
 - Group similar messages together
   - Use embeddings ?
-  - Implement an algorithm to group messages by window frame(separate conversation). Use ML.
-  - Use spark ML to label Telegram messages with predefined captions( supervised Learning/multiclass classification)
+  - Implement an algorithm to group messages by window frame(separate conversation) ?
+  - Use spark ML to label Telegram messages with predefined captions( supervised Learning/multiclass classification) ?
 
 - implement the tf/idf algorithm to find keywords in each message within the concrete channel
   - ~~Include the usage of the Azure tokenizer for creating  tokens out of messages using Ukraine language~~
