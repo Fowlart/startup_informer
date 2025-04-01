@@ -56,9 +56,9 @@ def _words_length_filter(x: col) -> Column:
 
 if __name__ == "__main__":
     configuration =({
-        "min_tf_idf_keyword_score": 2,
+        "min_tf_idf_keyword_score": 3,
         "min_token_length": 3,
-        "min_df": 2,
+        "min_df": 1,
         "min_tf": 1,
         "number_messages_to_take": 500000
         })

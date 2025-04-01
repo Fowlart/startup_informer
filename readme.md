@@ -49,17 +49,19 @@ Flag recognition should be organized at the bash script.~~
 - ~~Use Spark on Linux to build delta tables from messages~~
 - ~~Add data transformation for reach and informative table structure~~
 - ~~Collect data in star table pattern database(users, messages)~~
-- ~~Adjust Linux deployment~~ 
+- ~~Adjust Linux deployment~~
+
+- Group similar messages together
+  - Use embeddings ?
+  - Implement an algorithm to group messages by window frame(separate conversation). Use ML.
+  - Use spark ML to label Telegram messages with predefined captions( supervised Learning/multiclass classification)
 
 - implement the tf/idf algorithm to find keywords in each message within the concrete channel
   - ~~Include the usage of the Azure tokenizer for creating  tokens out of messages using Ukraine language~~
-  
   - Automate creation of the needed azure resources during the first set-up on the Ubuntu VM
-
-- Use spark ML to label Telegram messages with predefined captions( supervised Learning/multiclass classification )
-
-- Use embeddings to group similar messages together
 
 - Index all messages from telegram to Azure AI search, implement search by key-words from telegram
 
 - Add Spark reading and writing analyzed data to the Azure blob storage (will reduce local paths resolution need, and will allow Spark local script execution)   
+
+- Add single-time key extraction for Azure services(Keyring)

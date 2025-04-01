@@ -12,6 +12,7 @@ if __name__=="__main__":
         workspace_url=os.getenv('workspace_url'),
         ## grand_central_general
         service_principal_client_id=os.getenv('service_principal_client_id'),
+
         service_principal_client_secret=os.getenv('service_principal_client_secret')
     )
 
