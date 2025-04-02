@@ -1,8 +1,11 @@
 from pyspark.sql import SparkSession, Column
-from pyspark.sql.functions import udf, col, filter, regexp_extract, length, lit, array
+from pyspark.sql.functions import udf, col, regexp_extract, length, lit, array, transform
 from pyspark.sql.types import ArrayType,StringType
 from pyspark.ml.feature import IDF, CountVectorizer
 from delta import *
+from sparknlp import DocumentAssembler
+from sparknlp.annotator import LemmatizerModel, Tokenizer
+
 from azure_ai_utils import _analyze_text, extract_key_phrases
 
 
@@ -54,21 +57,23 @@ def _filter_words_with_digits(x: col)->Column:
 def _words_length_filter(x: col) -> Column:
     return length(x)>=configuration["min_token_length"]
 
+def _get_internal_field(struct: Column) -> Column:
+    return struct.getField("result")
+
 if __name__ == "__main__":
     configuration =({
         "min_tf_idf_keyword_score": 3,
         "min_token_length": 3,
         "min_df": 1,
-        "min_tf": 1,
-        "number_messages_to_take": 500000
+        "min_tf": 2,
+        "number_messages_to_take": 100000
         })
 
-    builder = (SparkSession
-        .builder
+    builder = (SparkSession.builder
         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
         .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog"))
 
-    spark = configure_spark_with_delta_pip(builder).getOrCreate()
+    spark = configure_spark_with_delta_pip(builder,extra_packages=["com.johnsnowlabs.nlp:spark-nlp_2.12:5.5.3"]).getOrCreate()
 
     spark.udf.register("extract_tokens_udf",extract_tokens_udf)
 
@@ -79,10 +84,25 @@ if __name__ == "__main__":
           .select("dialog", "user.id", "message_date", "message_text")
           .withColumnRenamed("id","user_id")
           .filter(col("user_id") == "553068238")
-          .limit(configuration["number_messages_to_take"])
-          .withColumn("tokens",extract_tokens_udf(col("message_text")))
-          .withColumn("tokens", filter(col("tokens"), _words_length_filter))
-          .withColumn("tokens",filter(col("tokens"),_filter_words_with_digits)))
+          .limit( configuration["number_messages_to_take"])  )
+          #.withColumn("tokens_0",extract_tokens_udf(col("message_text")))
+          #.withColumn("tokens_0", filter(col("tokens_0"), _words_length_filter))
+          #.withColumn("tokens_0",filter(col("tokens_0"),_filter_words_with_digits)))
+
+    documentAssembler = DocumentAssembler().setInputCol("message_text").setOutputCol("document")
+
+    df = documentAssembler.transform(df)
+
+    tok = Tokenizer().setInputCols("document").setOutputCol("tokens_0")
+
+    df = tok.fit(df).transform(df)
+
+    # using Lemmatizer
+    lem: LemmatizerModel = LemmatizerModel.pretrained("lemma", "uk").setInputCols(["tokens_0"]).setOutputCol("tokens_1")
+
+    df = lem.transform(df)
+
+    df = df.withColumn("tokens",transform(col("tokens_1"),_get_internal_field))
 
     cv = CountVectorizer(inputCol="tokens", outputCol="tf_out", minTF=configuration["min_tf"], minDF=configuration["min_df"])
 
