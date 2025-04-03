@@ -10,3 +10,4 @@ init_session.session
 /user_table/
 /key_words_extraction/
 /dbx_connect/
+/text_classification/

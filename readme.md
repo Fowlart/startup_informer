@@ -56,9 +56,7 @@ Flag recognition should be organized at the bash script.~~
   - explore using of https://sparknlp.org/
 
 - Group similar messages together
-  - Use embeddings ?
-  - Implement an algorithm to group messages by window frame(separate conversation) ?
-  - Use spark ML to label Telegram messages with predefined captions( supervised Learning/multiclass classification) ?
+  - explore using of https://sparknlp.org/
 
 - Index all messages from telegram to Azure AI search, implement search by key-words from telegram
 
