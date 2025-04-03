@@ -1,30 +1,13 @@
 from pyspark.sql import SparkSession, Column
-from pyspark.sql.functions import udf, col, regexp_extract, length, lit, array, transform
+from pyspark.sql.functions import udf, col, regexp_extract, length as spark_length, lit, array, transform, filter as spark_filter
 from pyspark.sql.types import ArrayType,StringType
 from pyspark.ml.feature import IDF, CountVectorizer
 from delta import *
 from sparknlp import DocumentAssembler
 from sparknlp.annotator import LemmatizerModel, Tokenizer
 
-from azure_ai_utils import _analyze_text, extract_key_phrases
+from azure_ai_utils import extract_key_phrases
 
-
-@udf(returnType=ArrayType(StringType()))
-def extract_tokens_udf(input_text: str) -> list[str]:
-    """
-    Extracts tokens from the input text using the specified analyzer.
-
-    Args:
-        input_text: The text to analyze.
-
-    Returns:
-        A list of tokens extracted from the text.
-    """
-    tokens_obj_list: list[dict[str, str]] = _analyze_text(
-        input_text, analyzer_name="uk.microsoft"
-    )
-
-    return [token_obj["token"] for token_obj in tokens_obj_list if "token" in token_obj]
 
 # UDF to extract keywords
 @udf(returnType=ArrayType(StringType()))
@@ -42,22 +25,28 @@ def extract_keywords_udf(tfidf_vector, vocabulary: list[str]):
 
     sorted_pairs = sorted(word_tfidf_pairs, key=lambda x: x[0], reverse=True)
 
-    top_keywords = [pair[1] for pair in sorted_pairs[:10]]
+    top_keywords = [pair[1] for pair in sorted_pairs[:configuration["max_keywords_count"]]]
 
     return top_keywords
 
 @udf(returnType=ArrayType(StringType()))
 def extract_keywords_with_azure_udf(input_text: str) ->list[str]:
+
     return extract_key_phrases(text=input_text, language="uk")
 
+
 def _filter_words_with_digits(x: col)->Column:
+
     return regexp_extract(x, r"\d", 0) == ""
 
 
 def _words_length_filter(x: col) -> Column:
-    return length(x)>=configuration["min_token_length"]
+
+    return spark_length(x)>=configuration["min_token_length"]
+
 
 def _get_internal_field(struct: Column) -> Column:
+
     return struct.getField("result")
 
 if __name__ == "__main__":
@@ -66,7 +55,8 @@ if __name__ == "__main__":
         "min_token_length": 3,
         "min_df": 1,
         "min_tf": 2,
-        "number_messages_to_take": 100000
+        "max_keywords_count": 5,
+        "number_messages_to_take": 10000000
         })
 
     builder = (SparkSession.builder
@@ -75,38 +65,37 @@ if __name__ == "__main__":
 
     spark = configure_spark_with_delta_pip(builder,extra_packages=["com.johnsnowlabs.nlp:spark-nlp_2.12:5.5.3"]).getOrCreate()
 
-    spark.udf.register("extract_tokens_udf",extract_tokens_udf)
-
     df = (spark
           .read
           .format("delta")
           .load("./../message_table")
           .select("dialog", "user.id", "message_date", "message_text")
           .withColumnRenamed("id","user_id")
-          .filter(col("user_id") == "553068238")
-          .limit( configuration["number_messages_to_take"])  )
-          #.withColumn("tokens_0",extract_tokens_udf(col("message_text")))
-          #.withColumn("tokens_0", filter(col("tokens_0"), _words_length_filter))
-          #.withColumn("tokens_0",filter(col("tokens_0"),_filter_words_with_digits)))
+          .filter( col("user_id") == "553068238" )
+          .limit( configuration["number_messages_to_take"]) )
 
     documentAssembler = DocumentAssembler().setInputCol("message_text").setOutputCol("document")
 
     df = documentAssembler.transform(df)
 
-    tok = Tokenizer().setInputCols("document").setOutputCol("tokens_0")
+    tokenizer = Tokenizer().setInputCols("document").setOutputCol("tokens_0")
 
-    df = tok.fit(df).transform(df)
+    df = tokenizer.fit(df).transform(df)
 
-    # using Lemmatizer
-    lem: LemmatizerModel = LemmatizerModel.pretrained("lemma", "uk").setInputCols(["tokens_0"]).setOutputCol("tokens_1")
+    lemmatizer: LemmatizerModel = LemmatizerModel.pretrained("lemma", "uk").setInputCols(["tokens_0"]).setOutputCol("tokens_1")
 
-    df = lem.transform(df)
+    df = lemmatizer.transform(df)
 
-    df = df.withColumn("tokens",transform(col("tokens_1"),_get_internal_field))
+    df = (df
+          .withColumn("tokens",transform(col("tokens_1"),_get_internal_field))
+          .withColumn("tokens", spark_filter(col("tokens"), _words_length_filter))
+          .withColumn("tokens",spark_filter(col("tokens"),_filter_words_with_digits))
+          )
 
     cv = CountVectorizer(inputCol="tokens", outputCol="tf_out", minTF=configuration["min_tf"], minDF=configuration["min_df"])
 
     cv_model = cv.fit(df)
+
     vectorized_tokens_df = cv_model.transform(df)
 
     idf = (IDF().setInputCol("tf_out").setOutputCol("idf_out"))

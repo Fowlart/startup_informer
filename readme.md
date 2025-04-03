@@ -51,7 +51,8 @@ Flag recognition should be organized at the bash script.~~
 - ~~Collect data in star table pattern database(users, messages)~~
 - ~~Adjust Linux deployment~~
 
-- implement the tf/idf algorithm to find keywords in each message within the concrete channel
+- Implement the tf/idf algorithm to find keywords in each message within the concrete channel
+  - automate the creation of Azure resources needed
   - explore using of https://sparknlp.org/
 
 - Group similar messages together
