@@ -43,4 +43,4 @@ if __name__ == "__main__":
 
     result = pipelineModel.transform(data)
 
-    result.select("final_sentiment").show(truncate=False)
+    result.show(truncate=False)

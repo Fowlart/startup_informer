@@ -1,6 +1,4 @@
-from pyspark.sql import Column
-from pyspark.sql.types import StructType, StructField, StringType, BooleanType, LongType, ArrayType
-from pyspark.sql.functions import col, regexp_extract, length as spark_length
+from pyspark.sql.types import StructType, StructField, StringType, BooleanType
 
 def get_schema_definition() -> StructType:
     """
