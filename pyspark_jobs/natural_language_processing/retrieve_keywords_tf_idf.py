@@ -2,11 +2,11 @@ from pyspark.sql import SparkSession, Column
 from pyspark.sql.functions import udf, col, regexp_extract, length as spark_length, lit, array, transform, filter as spark_filter
 from pyspark.sql.types import ArrayType,StringType
 from pyspark.ml.feature import IDF, CountVectorizer
-from delta import *
 from sparknlp import DocumentAssembler
 from sparknlp.annotator import LemmatizerModel, Tokenizer
-
-from azure_ai_utils import extract_key_phrases
+from pyspark_jobs.azure_ai_utils import extract_key_phrases
+from pyspark_jobs.__init__ import get_schema_definition
+import sparknlp
 
 
 # UDF to extract keywords
@@ -52,23 +52,21 @@ def _get_internal_field(struct: Column) -> Column:
 if __name__ == "__main__":
     configuration =({
         "min_tf_idf_keyword_score": 3,
-        "min_token_length": 3,
+        "min_token_length": 4,
         "min_df": 1,
-        "min_tf": 2,
+        "min_tf": 1,
         "max_keywords_count": 5,
         "number_messages_to_take": 10000000
         })
 
-    builder = (SparkSession.builder
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
-        .config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog"))
-
-    spark = configure_spark_with_delta_pip(builder,extra_packages=["com.johnsnowlabs.nlp:spark-nlp_2.12:5.5.3"]).getOrCreate()
+    spark = (sparknlp.start())
 
     df = (spark
           .read
-          .format("delta")
-          .load("./../message_table")
+          .option("multiline", "true")
+          .option("recursiveFileLookup", "true")
+          .schema(get_schema_definition())
+          .json("./../../dialogs/")
           .select("dialog", "user.id", "message_date", "message_text")
           .withColumnRenamed("id","user_id")
           .filter( col("user_id") == "553068238" )
@@ -121,8 +119,8 @@ if __name__ == "__main__":
     (ddf_with_keywords
      .select(["user_id", "message_date","tokens","keywords_tf_idf","keywords_azure"])
      .write
-     .json(path="./../key_words_extraction/df_with_keywords/", mode="overwrite"))
+     .json(path="./../../key_words_extraction/df_with_keywords/", mode="overwrite"))
 
-    df.write.json(path="./../key_words_extraction/df_with_tokens/", mode="overwrite")
+    df.write.json(path="./../../key_words_extraction/df_with_tokens/", mode="overwrite")
 
     spark.stop()

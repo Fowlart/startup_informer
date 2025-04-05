@@ -9,7 +9,6 @@ from telethon.tl.custom.dialog import Dialog
 import asyncio
 import datetime as dt
 import json
-import shutil
 import codecs
 import time
 sys.path.append(os.path.abspath(os.path.join(".", "../startup_informer")))
