@@ -11,3 +11,5 @@ init_session.session
 /key_words_extraction/
 /dbx_connect/
 /text_classification/
+/labelled_messages_for_training/
+/messages_for_training/
