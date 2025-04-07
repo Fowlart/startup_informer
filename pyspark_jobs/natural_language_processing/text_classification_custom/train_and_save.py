@@ -3,17 +3,11 @@ from pyspark.sql.functions import col, regexp_extract, length as spark_length, t
 from sparknlp import DocumentAssembler
 from sparknlp.annotator import LemmatizerModel, Tokenizer, DistilBertForSequenceClassification, Doc2VecApproach, \
     ClassifierDLApproach
-from pyspark.ml.feature import Word2Vec
-from pyspark_jobs.__init__ import get_schema_definition
 import sparknlp
 
 def _filter_words_with_digits(x: col)->Column:
 
     return regexp_extract(x, r"\d", 0) == ""
-
-def _words_length_filter(x: col) -> Column:
-
-    return spark_length(x)>=configuration["min_token_length"]
 
 def _get_internal_field(struct: Column) -> Column:
 
