@@ -1,6 +1,6 @@
 from pyspark.ml import Pipeline
 from sparknlp import DocumentAssembler
-from sparknlp.annotator import Tokenizer, ClassifierDLApproach, RoBertaEmbeddings, XlmRoBertaEmbeddings, UniversalSentenceEncoder
+from sparknlp.annotator import Tokenizer, ClassifierDLApproach, UniversalSentenceEncoder
 import sparknlp
 import os
 
