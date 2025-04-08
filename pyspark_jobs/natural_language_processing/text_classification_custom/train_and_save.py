@@ -83,15 +83,15 @@ if __name__ == "__main__":
 
                       (4,"Не псуй мені нерви!"),
 
-                      (5, "Люблю тебе сильно!"),
+                      (5,"Люблю тебе сильно!"),
 
-                      (6, "Чекай , бл"),
+                      (6,"Чекай , бл"),
 
-                      (7, "Купи грінки з хумосом")
+                      (7,"Купи грінки з хумосом"),
 
-    ]
+                      (8,"Графік на понеділок:")]
 
-    test_phrase_df = spark.createDataFrame(test_phrase,["id","message_text"])
+    test_phrase_df = spark.createDataFrame(test_phrase,["id", "message_text"])
 
     resul  = transformer.transform(test_phrase_df)
 
