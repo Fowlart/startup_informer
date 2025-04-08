@@ -1,19 +1,8 @@
 from pyspark.ml import Pipeline
-from pyspark.sql import SparkSession, Column
-from pyspark.sql.functions import col, regexp_extract, length as spark_length, transform, filter as spark_filter, array
 from sparknlp import DocumentAssembler
-from sparknlp.annotator import LemmatizerModel, Tokenizer, Doc2VecApproach, \
-    ClassifierDLApproach, BertSentenceEmbeddings
+from sparknlp.annotator import Tokenizer, ClassifierDLApproach, RoBertaEmbeddings, XlmRoBertaEmbeddings, UniversalSentenceEncoder
 import sparknlp
 import os
-
-def _filter_words_with_digits(x: col)->Column:
-
-    return regexp_extract(x, r"\d", 0) == ""
-
-def _get_internal_field(struct: Column) -> Column:
-
-    return struct.getField("result")
 
 if __name__ == "__main__":
 
@@ -21,43 +10,23 @@ if __name__ == "__main__":
 
     spark = (sparknlp.start())
 
-    df = (spark
-          .read
-          .json("/home/artur/PycharmProjects/startup_informer/labelled_messages_for_training")
-          .withColumn("categories", array(col("category")))
-          )
-
-
-    df.orderBy(col("category")).show(truncate=False, n=50)
+    df = (spark.read.json(f"{dir_path}/../../../labelled_messages_for_training"))
 
     documentAssembler = (
         DocumentAssembler()
         .setInputCol("message_text")
         .setOutputCol("document")
-        .setCleanupMode("shrink")
     )
 
-
-    tokenizer = (
-        Tokenizer()
-        .setInputCols("document")
-        .setOutputCol("tokens_0"))
+    tokenizer = Tokenizer().setInputCols("document").setOutputCol("token")
 
 
-    lemmatizer: LemmatizerModel = (
-        LemmatizerModel
-        .pretrained("lemma", "uk")
-        .setInputCols(["tokens_0"])
-        .setOutputCol("tokens_1"))
+    embeddings = (
+     UniversalSentenceEncoder.pretrained()
+    .setInputCols("document")
+    .setOutputCol("sentence_embeddings")
+    )
 
-    # todo: try different embeddings model
-    embeddings = (Doc2VecApproach()
-        .setInputCols(["tokens_1"])
-        .setOutputCol("sentence_embeddings"))
-
-    bert_sent_embeddings = (BertSentenceEmbeddings.pretrained('sent_small_bert_L8_512')
-        .setInputCols(["document"])
-        .setOutputCol("sentence_embeddings"))
 
     classsifier_dl_trained = (ClassifierDLApproach()
                               .setInputCols(["sentence_embeddings"])
@@ -69,32 +38,31 @@ if __name__ == "__main__":
                               .setEnableOutputLogs(True)
                               .setValidationSplit(0.1))
 
-    pipline = Pipeline(stages=[documentAssembler, tokenizer, lemmatizer, bert_sent_embeddings, classsifier_dl_trained])
+    pipline = Pipeline(stages=[
+        documentAssembler,
+        tokenizer,
+        embeddings,
+        classsifier_dl_trained
+    ])
 
     transformer = pipline.fit(df)
 
     # test
-    test_phrase = [
-                      (1,"Ти поганий!"),
-
+    test_phrase = [   (1,"Ти поганий!"),
                       (2,"Чому не відписуєш???????"),
-
                       (3,"Ти невдячний!"),
-
                       (4,"Не псуй мені нерви!"),
-
                       (5,"Люблю тебе сильно!"),
-
                       (6,"Чекай , бл"),
-
                       (7,"Купи грінки з хумосом"),
-
-                      (8,"Графік на понеділок:")]
+                      (8,"Графік на понеділок: 9:00 - робота")   ]
 
     test_phrase_df = spark.createDataFrame(test_phrase,["id", "message_text"])
 
     resul  = transformer.transform(test_phrase_df)
 
-    resul.select("message_text","class").show(truncate=False)
+    (resul
+     .select("message_text","class")
+     .show(truncate=False))
 
     spark.stop()
