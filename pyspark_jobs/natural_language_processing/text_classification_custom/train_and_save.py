@@ -17,6 +17,8 @@ if __name__ == "__main__":
 
     df = (spark.read.json(f"{dir_path}/../../../labelled_messages_for_training"))
 
+    df.show(truncate=False)
+
     documentAssembler = (
         DocumentAssembler()
         .setInputCol("message_text")
@@ -25,13 +27,11 @@ if __name__ == "__main__":
 
     tokenizer = Tokenizer().setInputCols("document").setOutputCol("token")
 
-
     embeddings = (
-     UniversalSentenceEncoder.pretrained()
-    .setInputCols("document")
-    .setOutputCol("sentence_embeddings")
+        UniversalSentenceEncoder.pretrained()
+        .setInputCols("document")
+        .setOutputCol("sentence_embeddings")
     )
-
 
     classsifier_dl_trained = (ClassifierDLApproach()
                               .setInputCols(["sentence_embeddings"])
@@ -53,21 +53,21 @@ if __name__ == "__main__":
     transformer = pipline.fit(df)
 
     # test
-    test_phrase = [   (1,"Ти поганий!"),
-                      (2,"Чому не відписуєш???????"),
-                      (3,"Ти невдячний!"),
-                      (4,"Не псуй мені нерви!"),
-                      (5,"Люблю тебе сильно!"),
-                      (6,"Чекай , бл"),
-                      (7,"Купи грінки з хумосом"),
-                      (8,"Графік на понеділок: 9:00 - робота")   ]
+    test_phrase = [(1, "Ти поганий!"),
+                   (2, "Чому не відписуєш???????"),
+                   (3, "Ти невдячний!"),
+                   (4, "Не псуй мені нерви!"),
+                   (5, "Люблю тебе сильно!"),
+                   (6, "Чекай , бл"),
+                   (7, "Купи грінки з хумосом"),
+                   (8, "Графік на понеділок: 9:00 - робота")]
 
-    test_phrase_df = spark.createDataFrame(test_phrase,["id", "message_text"])
+    test_phrase_df = spark.createDataFrame(test_phrase, ["id", "message_text"])
 
-    result  = transformer.transform(test_phrase_df)
+    result = transformer.transform(test_phrase_df)
 
     result.printSchema()
 
-    (result.show(truncate=False))
+    (result.select("message_text", "class").show(truncate=False))
 
     spark.stop()

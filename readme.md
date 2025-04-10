@@ -51,6 +51,10 @@ Flag recognition should be organized at the bash script.~~
 - ~~Collect data in star table pattern database(users, messages)~~
 - ~~Adjust Linux deployment~~
 
+- Add possibility to develop on windows
+  - create run configurations for each Python script
+  - adjust https://sparknlp.org/ libs version for Windows 11
+
 - Use Classification to classify messages
   - explore using of https://sparknlp.org/
 
