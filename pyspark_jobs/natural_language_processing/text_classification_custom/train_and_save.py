@@ -3,8 +3,13 @@ from sparknlp import DocumentAssembler
 from sparknlp.annotator import Tokenizer, ClassifierDLApproach, UniversalSentenceEncoder
 import sparknlp
 import os
+import sys
 
 if __name__ == "__main__":
+
+    os.environ['PYSPARK_PYTHON'] = sys.executable
+
+    os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -59,10 +64,10 @@ if __name__ == "__main__":
 
     test_phrase_df = spark.createDataFrame(test_phrase,["id", "message_text"])
 
-    resul  = transformer.transform(test_phrase_df)
+    result  = transformer.transform(test_phrase_df)
 
-    (resul
-     .select("message_text","class")
-     .show(truncate=False))
+    result.printSchema()
+
+    (result.show(truncate=False))
 
     spark.stop()
