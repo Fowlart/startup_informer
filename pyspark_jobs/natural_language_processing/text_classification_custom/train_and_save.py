@@ -17,8 +17,6 @@ if __name__ == "__main__":
 
     df = (spark.read.json(f"{dir_path}/../../../labelled_messages_for_training"))
 
-    df.show(truncate=False)
-
     documentAssembler = (
         DocumentAssembler()
         .setInputCol("message_text")
@@ -66,7 +64,6 @@ if __name__ == "__main__":
 
     result = transformer.transform(test_phrase_df)
 
-    result.printSchema()
 
     (result.select("message_text", "class").show(truncate=False))
 
