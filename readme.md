@@ -53,7 +53,7 @@ Flag recognition should be organized at the bash script.~~
 
 - Add possibility to develop on windows
   - create run configurations for each Python script
-  - adjust https://sparknlp.org/ libs version for Windows 11
+  - ~~adjust https://sparknlp.org/ libs version for Windows 11~~
 
 - Use Classification to classify messages
   - explore using of https://sparknlp.org/
