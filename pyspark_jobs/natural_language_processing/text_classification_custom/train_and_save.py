@@ -17,6 +17,10 @@ if __name__ == "__main__":
 
     df = (spark.read.json(f"{dir_path}/../../../labelled_messages_for_training"))
 
+    print(f"All defined labels: ")
+
+    df.select('category').distinct().show()
+
     documentAssembler = (
         DocumentAssembler()
         .setInputCol("message_text")
@@ -35,8 +39,8 @@ if __name__ == "__main__":
                               .setInputCols(["sentence_embeddings"])
                               .setOutputCol("class")
                               .setLabelColumn("category")
-                              .setBatchSize(128)
-                              .setMaxEpochs(5)
+                              .setBatchSize(40)
+                              .setMaxEpochs(10)
                               .setLr(1e-3)
                               .setEnableOutputLogs(True)
                               .setValidationSplit(0.1))
@@ -58,7 +62,8 @@ if __name__ == "__main__":
                    (5, "Люблю тебе сильно!"),
                    (6, "Чекай , бл"),
                    (7, "Купи грінки з хумосом"),
-                   (8, "Графік на понеділок: 9:00 - робота")]
+                   (8, "Графік на понеділок: 9:00 - робота"),
+                   (9, "Де зараз Вдадьо?")]
 
     test_phrase_df = spark.createDataFrame(test_phrase, ["id", "message_text"])
 
