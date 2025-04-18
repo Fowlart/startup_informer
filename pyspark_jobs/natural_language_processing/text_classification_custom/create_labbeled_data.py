@@ -27,6 +27,7 @@ if __name__ == "__main__":
     dir_path = os.path.dirname(os.path.realpath(__file__))
 
     labelled_data_path = f"{dir_path}/../../../labelled_messages_for_training"
+
     unlabelled_data_path = f"{dir_path}/../../../messages_for_training"
 
     (spark
@@ -51,6 +52,7 @@ if __name__ == "__main__":
     (df.drop("category")
      .subtract(df_labelled.drop("category"))
      .withColumn("category",lit("undefined"))
+     .orderBy(col("message_date").desc())
      .write.mode("append").partitionBy("category").json(labelled_data_path))
 
     spark.stop()

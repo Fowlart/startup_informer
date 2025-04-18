@@ -7,6 +7,10 @@ import sys
 
 if __name__ == "__main__":
 
+    os.environ['PYSPARK_PYTHON'] = sys.executable
+
+    os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
+
     dir_path = os.path.dirname(os.path.realpath(__file__))
 
     spark = sparknlp.start()
