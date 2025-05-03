@@ -1,4 +1,4 @@
-# Telegram Analyser
+# Telegram Message Analyser
 
 - Application able to parse the Telegram messages and store them in delta-table format for further processing with the usage of ML/NLP techniques
 
@@ -68,4 +68,4 @@ Flag recognition should be organized at the bash script.~~
 
 **Moving workloads to MS Fabric:**
 
-- Add the script and the PyCharm Windows configuration to ingest data from TG into Azure ADLS Gen 2 directly as a Delta table
+- Move the logic for parsing the TG channel into an Azure Function with HTTP and time triggers, and Blob binding(reuse https://github.com/Fowlart/azure-functions-python)
