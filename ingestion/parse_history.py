@@ -8,12 +8,10 @@ from telethon.tl.patched import Message
 from telethon.tl.custom.dialog import Dialog
 import asyncio
 import datetime as dt
-import json
-import codecs
 import time
 sys.path.append(os.path.abspath(os.path.join(".", "../startup_informer")))
 print(sys.path)
-from utilities.utils import get_tg_client, execute_init_procedure
+from utilities.utils import get_tg_client, execute_init_procedure, save_to_local_fs
 
 
 async def find_and_ingest_messages(dialog: Dialog,
@@ -44,9 +42,8 @@ async def find_and_ingest_messages(dialog: Dialog,
                 print(f"Error processing sender: {e}")
                 user = "no info"
 
-            with codecs.open(f"./dialogs/{folder_name}/{file_name}.json", "w","utf-8","replace") as file:
                 # Data to be written
-                json_record = {
+            json_record = {
                     "crawling_date": str(dt.datetime.now()),
                     "message_date": str(message.date.date()),
                     "message_text": text_message,
@@ -55,13 +52,9 @@ async def find_and_ingest_messages(dialog: Dialog,
                     "is_channel": message.is_channel,
                     "is_group": message.is_group,
                     "user": user
-                }
+            }
 
-                json_object = json.dumps(json_record, indent=2,separators=(',', ':'),ensure_ascii=False)
-
-                file.write(json_object)
-
-                file.close()
+            save_to_local_fs(path=f"./dialogs/{folder_name}/{file_name}.json", json_record=json_record)
 
     print(f"Dialog `{dialog.title}` was fully parsed.")
 

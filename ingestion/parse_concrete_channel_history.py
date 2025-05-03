@@ -10,6 +10,9 @@ print(sys.path)
 from parse_history import find_and_ingest_messages
 from utilities.utils import execute_init_procedure
 
+def run():
+    execute_init_procedure(traverse_full_history)
+
 async def traverse_full_history(client: TelegramClient, search_term: str = ""):
     tasks: list[Task] = []
     channel_to_parse = os.getenv("SPECIFIC_DIALOG")
@@ -25,4 +28,4 @@ async def traverse_full_history(client: TelegramClient, search_term: str = ""):
 
 if __name__ =="__main__":
 
-    execute_init_procedure(traverse_full_history)
+    run()

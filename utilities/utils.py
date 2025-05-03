@@ -2,6 +2,11 @@ import os
 
 from telethon import TelegramClient
 import shutil
+import json
+import codecs
+
+from utilities.AzureAuth import AzureAuth
+
 
 def get_tg_client() -> TelegramClient:
     api_id = os.getenv("TELEGRAM_API_ID")
@@ -33,3 +38,19 @@ def execute_init_procedure(func, search_term: str = ""):
         client.loop.run_until_complete(func(client, search_term))
 
     print(f"Done.")
+
+def save_to_local_fs(path: str, json_record: dict[str,str]):
+    with codecs.open(path, "w", "utf-8", "replace") as file:
+        json_object = json.dumps(json_record, indent=2, separators=(',', ':'), ensure_ascii=False)
+        file.write(json_object)
+        file.close()
+
+#todo: implement
+def save_to_blob():
+    az = AzureAuth()
+    az.auth_connection_string()
+    print(az.account_info)
+
+if __name__ == "__main__":
+
+    save_to_blob()
