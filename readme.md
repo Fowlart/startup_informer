@@ -68,4 +68,6 @@ Flag recognition should be organized at the bash script.~~
 
 **Moving workloads to MS Fabric:**
 
-- Move the logic for parsing the TG channel into an Azure Function with HTTP and time triggers, and Blob binding(reuse https://github.com/Fowlart/azure-functions-python)
+- Modify the code to parse the channel with messages on the startup of the Linux VM, and put them in a Blob. Design a timer-based trigger.
+- Make it run on Ubuntu VM with 32GB of memory 1GB RAM
+- Automate azure deployment
