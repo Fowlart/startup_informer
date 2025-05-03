@@ -1,11 +1,8 @@
-# Telegram Linux Startup informer
+# Telegram Analyser
 
-- Application able to parse the Telegram messages and store them in delta-table format for further processing with the usage of ML techniques
+- Application able to parse the Telegram messages and store them in delta-table format for further processing with the usage of ML/NLP techniques
 
-- Also, the app can parse system logs on PC/VM startup to identify the last boot timestamp and the wifi connection used during the previous session. 
-
-- We plan to create an interface for the application for user interaction via Telegram.
-
+- This application also serves as a laboratory for studying SaaS solutions, such as MS Fabric, Azure AI search, and Azure Language Service for Natural Language Processing-related tasks
 
 **How to install on Linux Ubuntu:**
 
@@ -68,3 +65,7 @@ Flag recognition should be organized at the bash script.~~
 - Add Spark reading and writing analyzed data to the Azure blob storage (will reduce local paths resolution need, and will allow Spark local script execution)   
 
 - Add single-time key extraction for Azure services(Keyring)
+
+**Moving workloads to MS Fabric:**
+
+- Add the script and the PyCharm Windows configuration to ingest data from TG into Azure ADLS Gen 2 directly as a Delta table
