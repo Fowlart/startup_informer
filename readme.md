@@ -71,3 +71,4 @@ Flag recognition should be organized at the bash script.~~
 - Modify the code to parse the channel with messages on the schedule within the Linux VM, and put them in a Blob.
 - Make it run on Ubuntu VM with 32GB of memory 1GB RAM
 - Automate azure deployment
+- Investigate if it is possible to track access to static website hosting on Azure Storage, and make a statistic out of it
