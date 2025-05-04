@@ -25,10 +25,11 @@ USAGE:
 import os
 import sys
 from dotenv import load_dotenv
+from azure.storage.blob import ContainerClient
 
 class AzureAuth(object):
 
-    def __init__(self):
+    def __init__(self, container_name: str):
 
         load_dotenv("./../.env")
 
@@ -42,10 +43,10 @@ class AzureAuth(object):
         self.connection_string = os.getenv("STORAGE_CONNECTION_STRING")
         self.shared_access_key = os.getenv("STORAGE_ACCOUNT_KEY")
 
-        self.blob_service_client = None
-        self.container_client = None
-        self.blob_client = None
+        self.container_client: ContainerClient  = None
         self.account_info = None
+        self.container_name: str = container_name
+        self.blob_service_client = None
 
     def auth_connection_string(self):
         if self.connection_string is None:
@@ -60,13 +61,14 @@ class AzureAuth(object):
         # [START auth_from_connection_string_container]
         from azure.storage.blob import ContainerClient
         self.container_client = ContainerClient.from_connection_string(
-            self.connection_string, container_name="mycontainer")
+            self.connection_string, container_name=self.container_name)
         # [END auth_from_connection_string_container]
 
         # [START auth_from_connection_string_blob]
-        from azure.storage.blob import BlobClient
-        self.blob_client = BlobClient.from_connection_string(
-            self.connection_string, container_name="mycontainer", blob_name="blobname.txt")
+        # from azure.storage.blob import BlobClient
+        #
+        # self.blob_client = BlobClient.from_connection_string(
+        #     self.connection_string, container_name=self.container_name, blob_name="blobname.txt")
         # [END auth_from_connection_string_blob]
 
         # Get account information for the Blob Service
@@ -145,10 +147,3 @@ class AzureAuth(object):
 
         # Get account information for the Blob Service
         account_info = blob_service_client.get_service_properties()
-
-if __name__ == '__main__':
-    sample = AzureAuth()
-    sample.auth_connection_string()
-    sample.auth_shared_access_signature()
-    sample.auth_blob_url()
-    sample.auth_default_azure_credential()

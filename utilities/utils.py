@@ -7,6 +7,8 @@ import codecs
 
 from utilities.AzureAuth import AzureAuth
 
+az = AzureAuth("telegram-messages")
+
 
 def get_tg_client() -> TelegramClient:
     api_id = os.getenv("TELEGRAM_API_ID")
@@ -46,11 +48,20 @@ def save_to_local_fs(path: str, json_record: dict[str,str]):
         file.close()
 
 #todo: implement
-def save_to_blob():
-    az = AzureAuth()
+def save_to_blob(blob_name: str, json_record: dict[str,str]):
+    json_object = json.dumps(json_record, indent=2, separators=(',', ':'), ensure_ascii=False)
     az.auth_connection_string()
-    print(az.account_info)
+    container_client = az.container_client
+    source_blob_client = container_client.get_blob_client(blob_name)
+    blob_info = source_blob_client.upload_blob(json_object, blob_type="BlockBlob")
+    print(blob_info)
 
-if __name__ == "__main__":
 
-    save_to_blob()
+def clear_container():
+    az.auth_connection_string()
+    container_client = az.container_client
+
+    blobs = container_client.list_blobs()
+    for blob in blobs:
+        container_client.delete_blob(blob.name)
+    print(f"All blobs have been deleted from the container.")
