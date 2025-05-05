@@ -13,6 +13,10 @@ if __name__ == "__main__":
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
 
+    os.environ['PYSPARK_PYTHON'] = sys.executable
+
+    os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
+
     spark = sparknlp.start()
 
     df = (spark.read.json(f"{dir_path}/../../../labelled_messages_for_training"))

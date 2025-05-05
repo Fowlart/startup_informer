@@ -70,5 +70,9 @@ Flag recognition should be organized at the bash script.~~
 
 - Modify the code to parse the channel with messages on the schedule within the Linux VM, and put them in a Blob.
 - Make it run on Ubuntu VM with 32GB of memory 1GB RAM
-- Automate azure deployment
-- Investigate if it is possible to track access to static website hosting on Azure Storage, and make a statistic out of it
+- Create a pipeline to convert messages to delta table
+- Find a way to categorize messages into some predefined categories:
+  - Doc: https://learn.microsoft.com/en-us/azure/ai-services/language-service/custom-text-classification/overview 
+  - Create a Spark job in Fabric to convert the labelled data file out of raw messages and a subset of  labelled messages: 
+  https://learn.microsoft.com/en-gb/azure/ai-services/language-service/custom-text-classification/concepts/data-formats
+- Automate deployment: Fabric pipline + VM on Azure + Azure AI language Services

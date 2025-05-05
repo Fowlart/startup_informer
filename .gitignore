@@ -14,3 +14,4 @@ init_session.session
 /labelled_messages_for_training/
 /messages_for_training/
 /labelled_messages_for_training_toxic/
+/.run/
