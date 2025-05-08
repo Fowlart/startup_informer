@@ -53,7 +53,7 @@ def save_to_blob(blob_name: str, json_record: dict[str,str]):
     az.auth_connection_string()
     container_client = az.container_client
     source_blob_client = container_client.get_blob_client(blob_name)
-    blob_info = source_blob_client.upload_blob(json_object, blob_type="BlockBlob")
+    blob_info = source_blob_client.upload_blob(json_object, blob_type="BlockBlob", overwrite=True)
     print(blob_info)
 
 

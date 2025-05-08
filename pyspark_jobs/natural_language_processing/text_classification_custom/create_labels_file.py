@@ -1,10 +1,16 @@
 import os
-
+import sys
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col,input_file_name
+from pyspark.sql.functions import col, input_file_name, regexp_extract, lit, split, size
 from pyspark_jobs.__init__ import get_labelled_message_schema, get_raw_schema_definition
-
+import json
+from utilities.utils import save_to_blob
 if __name__ == "__main__":
+
+    os.environ['PYSPARK_PYTHON'] = sys.executable
+
+    os.environ['PYSPARK_DRIVER_PYTHON'] = sys.executable
+
     spark = (SparkSession.builder.getOrCreate())
 
     # get script dir path
@@ -19,7 +25,12 @@ if __name__ == "__main__":
                                       .schema(get_labelled_message_schema())
                                       .json(labelled_data_path))
 
-    labelled_messages_for_training.printSchema()
+    labelled_messages_for_training = (
+        labelled_messages_for_training
+        .select("message_text", "category")
+        .filter(col("category") != "undefined")
+    )
+
 
     all_messages_df =(spark
           .read
@@ -31,10 +42,37 @@ if __name__ == "__main__":
      .withColumnRenamed("id", "user_id")
      .filter(col("user_id") == "553068238")
      .drop("user_id")
-     .withColumn("file_name",input_file_name()))
+     .withColumn("file_name", input_file_name())
+     .withColumn("file_name",split(col("file_name"),"/").getItem(size(split(col("file_name"),"/"))-1))
+
+                      )
 
     all_messages_df.show(truncate=False)
 
+    result_df = (all_messages_df
+                 .join(labelled_messages_for_training, on="message_text", how="inner")
+                 .select("message_text", "file_name", "category")).distinct()
+
+
+    result_df.show(truncate=False)
+
+    training, test = result_df.randomSplit([0.7, 0.3], 45)
+
+    combined_list = training.rdd.map(lambda row: {
+        "location": row.file_name,
+        "language": "uk",
+        "dataset": "Train",
+        "class": {
+            "category": row.category
+        }
+    }).collect() + test.rdd.map(lambda row: {
+        "location": row.file_name,
+        "language": "uk",
+        "dataset": "Test",
+        "class": {
+            "category": row.category
+        }
+    }).collect()
 
 
     labels_dict = {
@@ -62,25 +100,12 @@ if __name__ == "__main__":
                     "category": "toxic"
                 }
             ],
-            "documents": [
-                {
-                    "location": "{DOCUMENT-NAME}",
-                    "language": "{LANGUAGE-CODE}",
-                    "dataset": "{DATASET}",
-                    "class": {
-                        "category": "Class2"
-                    }
-                },
-                {
-                    "location": "{DOCUMENT-NAME}",
-                    "language": "{LANGUAGE-CODE}",
-                    "dataset": "{DATASET}",
-                    "class": {
-                        "category": "Class1"
-                    }
-                }
-            ]
+            "documents": combined_list
         }
     }
+
+    print(json.dumps(labels_dict, indent=4, ensure_ascii=False))
+
+    save_to_blob("labels.json",labels_dict)
 
     spark.stop()
