@@ -1,6 +1,6 @@
 from pyspark.sql.types import StructType, StructField, StringType, BooleanType
 
-def get_schema_definition() -> StructType:
+def get_raw_schema_definition() -> StructType:
     """
     Creates a PySpark DataFrame schema from the provided JSON structure.
     """
@@ -64,3 +64,10 @@ def get_schema_definition() -> StructType:
     ])
 
     return schema
+
+def get_labelled_message_schema():
+
+    return StructType([
+        StructField("message_date", StringType(), True),
+        StructField("message_text", StringType(), True),
+        StructField("category", StringType(), True)])

@@ -3,7 +3,7 @@ import os
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, lit, input_file_name, to_date, explode
 from delta import *
-from __init__ import get_schema_definition
+from __init__ import get_raw_schema_definition
 
 if __name__ == "__main__":
 
@@ -23,7 +23,7 @@ if __name__ == "__main__":
           .read
           .option("multiline","true")
           .option("recursiveFileLookup", "true")
-          .schema(get_schema_definition())
+          .schema(get_raw_schema_definition())
           .json("../dialogs/")
           .withColumn("path",input_file_name())
           .withColumn("message_date",to_date(col("message_date")))

@@ -3,7 +3,7 @@ from pyspark.sql.functions import col, regexp_extract, length as spark_length, t
 from pyspark.sql.types import FloatType
 from sparknlp import DocumentAssembler
 from sparknlp.annotator import LemmatizerModel, Tokenizer, DistilBertForSequenceClassification
-from pyspark_jobs.__init__ import get_schema_definition
+from pyspark_jobs.__init__ import get_raw_schema_definition
 import sparknlp
 
 
@@ -32,7 +32,7 @@ if __name__ == "__main__":
           .read
           .option("multiline", "true")
           .option("recursiveFileLookup", "true")
-          .schema(get_schema_definition())
+          .schema(get_raw_schema_definition())
           .json("../../dialogs/")
           .select("dialog", "user.id", "message_date", "message_text")
           .withColumnRenamed("id", "user_id")
