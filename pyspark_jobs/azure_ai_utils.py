@@ -1,13 +1,13 @@
 # todo: The problem with this module: if we use a function within a separate module outside the PySpark job script,
 #  it is not visible by Spark in runtime. Can be resolved by packaging all the code inside a wheel
 # utilities to work with Azure AI search services
-from azure.core.credentials import AzureKeyCredential
 # todo: add async here
 from azure.search.documents import SearchClient
 from azure.search.documents.indexes import SearchIndexClient
 from azure.search.documents.indexes.models import AnalyzeTextOptions
-from subprocess import Popen, PIPE
-from azure.ai.textanalytics import TextAnalyticsClient
+from azure.core.credentials import AzureKeyCredential
+from azure.ai.textanalytics import (TextAnalyticsClient, SingleLabelClassifyAction)
+import os
 
 class bcolors:
     HEADER = '\033[95m'
@@ -20,57 +20,29 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-
-def _get_folder_with_scripts() -> str:
-    return "azure_ai_scripts"
-
 def _get_test_index_name()->str:
     return "fowlart-personal-index"
 
 def _get_ai_search_endpoint() -> str:
-    return f"https://fowlart-ai-search.search.windows.net"
+    return str(os.getenv("AI_SEARCH_ENDPOINT"))
 
 def _get_language_service_endpoint() -> str:
-    return "https://fowlart-language-service.cognitiveservices.azure.com"
+    return str(os.getenv("AZURE_LANGUAGE_ENDPOINT"))
 
-
-def _get_terminal_command(file_name_to_execute: str) -> list[str]:
-    linux_cmd = ['sh', f'../{_get_folder_with_scripts()}/{file_name_to_execute}.sh']
-    return linux_cmd
-
-def _get_azure_service_key(script_name: str) ->str:
-
-    result = ""
-    cmd = _get_terminal_command(script_name)
-    proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
-    while True:
-        line = proc.stdout.readline()
-        if line != b'':
-            the_line = line.decode("utf-8").strip()
-            if "key is>" in the_line:
-                result = the_line.split(">")[-1]
-        else:
-            break
-    return result
-
-def _get_search_service_key()->str:
-    file_name = "ai_service_api_key"
-    print(f"{bcolors.OKBLUE} Starting search service key extraction {bcolors.ENDC}")
-    return _get_azure_service_key(file_name)
+def _get_azure_ai_search_key() ->str:
+    return str(os.getenv("AZURE_AI_SEARCH_KEY"))
 
 def _get_language_service_key()->str:
-    file_name = "language_service_api_key"
-    print(f"{bcolors.OKBLUE} Starting language service key extraction {bcolors.ENDC}")
-    return _get_azure_service_key(file_name)
+    return str(os.getenv("AZURE_LANGUAGE_KEY"))
 
 def _get_search_index_client() -> SearchIndexClient:
     service_endpoint = _get_ai_search_endpoint()
-    key = _get_search_service_key()
+    key = _get_azure_ai_search_key()
     return SearchIndexClient(service_endpoint, AzureKeyCredential(key))
 
 def _get_search_client(index_name: str = None) -> SearchClient:
     service_endpoint = _get_ai_search_endpoint()
-    key = _get_search_service_key()
+    key = _get_azure_ai_search_key()
     index_name = _get_test_index_name() if (index_name is None) else index_name
 
     return SearchClient(endpoint=service_endpoint,
@@ -114,31 +86,48 @@ def extract_key_phrases(text: str,
 
     return result
 
+def sample_classify_document_single_category(single_category_classify_project_name: str,
+                                             single_category_classify_deployment_name: str,
+                                             documents: list[str]):
+
+    endpoint = _get_language_service_endpoint()
+    key = _get_language_service_key()
+    project_name = single_category_classify_project_name
+    deployment_name = single_category_classify_deployment_name
+
+
+    text_analytics_client = TextAnalyticsClient(
+        endpoint=endpoint,
+        credential=AzureKeyCredential(key),
+    )
+
+
+    poller = text_analytics_client.begin_analyze_actions(
+        documents,
+        actions=[
+            SingleLabelClassifyAction(
+                project_name=project_name,
+                deployment_name=deployment_name
+            ),
+        ],
+    )
+
+    document_results = poller.result()
+    for doc, classification_results in zip(documents, document_results):
+        print(f"{doc} <-> {classification_results}")
+
 
 if __name__ == "__main__":
 
-    content_en = """
-    The quick brown fox jumps over the lazy dog
-    """
-
-    content_ukr ="""
-    Наступну суботу-неділю 8-9 березня планую бути у Львові. Зможеш бути трохи вільнішим від своєї роботи у ці дні?
-    """
-
-    result= get_tokens(content_en,
-               "en.microsoft",
-               "fowlart-personal-index",
-                       _get_search_index_client())
-
-    print(result)
-
-    tokens = _analyze_text(text=content_ukr, analyzer_name="uk.microsoft")
-
-    print(type(tokens))
-
-    for token in tokens:
-        print(token)
-        print(type(token))
-
-    print("Show extracted keyphrases example:")
-    print(extract_key_phrases(text=content_ukr, language="uk"))
+    print("Showcase custom text classification: ")
+    sample_classify_document_single_category(single_category_classify_project_name="tg-message-classification",
+                                             single_category_classify_deployment_name="deployed_first_model",
+                                             documents=[
+                                                 "Ти поганий!",
+                                                 "Чому не відписуєш???????",
+                                                 "Ти невдячний!",
+                                                 "Не псуй мені нерви!",
+                                                 "Люблю тебе сильно!",
+                                                 "Купи грінки з хумосом",
+                                                 "Графік на понеділок: 9:00 - робота",
+                                                 "Де зараз Вдадьо?"])

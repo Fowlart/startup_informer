@@ -122,7 +122,7 @@ if __name__ == "__main__":
     clear_container()
 
     for f in files_to_export:
-        save_to_blob(f["file_name"],f)
+        save_to_blob(f["file_name"],f["message_text"])
 
     save_to_blob("labels.json",labels_dict)
 
