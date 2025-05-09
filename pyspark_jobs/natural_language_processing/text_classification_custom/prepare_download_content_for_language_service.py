@@ -54,8 +54,7 @@ if __name__ == "__main__":
                     col("message_date"),
                     col("message_text"),
                     col("file_name"),
-                    coalesce(col("labeled.category"),col("all.category")).alias("category")
-))
+                    coalesce(col("labeled.category"),col("all.category")).alias("category")))
                  .distinct())
 
 
@@ -117,7 +116,8 @@ if __name__ == "__main__":
         "category": row.category}).collect()
 
     print("Messages to upload:")
-    print(files_to_export)
+    for x in files_to_export:
+        print(x)
 
     clear_container()
 
