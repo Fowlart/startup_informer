@@ -1,10 +1,12 @@
 import os
 import sys
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, input_file_name, regexp_extract, lit, split, size
+from pyspark.sql.functions import col, input_file_name, lit, split, size, coalesce
+from pyspark.sql.types import StringType
+
 from pyspark_jobs.__init__ import get_labelled_message_schema, get_raw_schema_definition
 import json
-from utilities.utils import save_to_blob
+from utilities.utils import save_to_blob, clear_container
 if __name__ == "__main__":
 
     os.environ['PYSPARK_PYTHON'] = sys.executable
@@ -44,17 +46,18 @@ if __name__ == "__main__":
      .drop("user_id")
      .withColumn("file_name", input_file_name())
      .withColumn("file_name",split(col("file_name"),"/").getItem(size(split(col("file_name"),"/"))-1))
+     .withColumn("category",lit(None).cast(StringType())))
 
-                      )
+    result_df = ((all_messages_df.alias("all")
+                 .join(labelled_messages_for_training.alias("labeled"), on="message_text", how="inner")
+                 .select(
+                    col("message_date"),
+                    col("message_text"),
+                    col("file_name"),
+                    coalesce(col("labeled.category"),col("all.category")).alias("category")
+))
+                 .distinct())
 
-    all_messages_df.show(truncate=False)
-
-    result_df = (all_messages_df
-                 .join(labelled_messages_for_training, on="message_text", how="inner")
-                 .select("message_text", "file_name", "category")).distinct()
-
-
-    result_df.show(truncate=False)
 
     training, test = result_df.randomSplit([0.7, 0.3], 45)
 
@@ -104,7 +107,22 @@ if __name__ == "__main__":
         }
     }
 
+    print("Label file: ")
     print(json.dumps(labels_dict, indent=4, ensure_ascii=False))
+
+    files_to_export =all_messages_df.rdd.map( lambda row: {
+        "file_name": row.file_name,
+        "message_date": row.message_date,
+        "message_text": row.message_text,
+        "category": row.category}).collect()
+
+    print("Messages to upload:")
+    print(files_to_export)
+
+    clear_container()
+
+    for f in files_to_export:
+        save_to_blob(f["file_name"],f)
 
     save_to_blob("labels.json",labels_dict)
 
