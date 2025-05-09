@@ -54,7 +54,7 @@ if __name__ == "__main__":
                     col("message_date"),
                     col("message_text"),
                     col("file_name"),
-                    coalesce(col("labeled.category"),col("all.category")).alias("category")))
+                    col("labeled.category").alias("category")))
                  .distinct())
 
 
@@ -109,7 +109,7 @@ if __name__ == "__main__":
     print("Label file: ")
     print(json.dumps(labels_dict, indent=4, ensure_ascii=False))
 
-    files_to_export =all_messages_df.rdd.map( lambda row: {
+    files_to_export =result_df.rdd.map( lambda row: {
         "file_name": row.file_name,
         "message_date": row.message_date,
         "message_text": row.message_text,
