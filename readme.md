@@ -54,7 +54,7 @@ Flag recognition should be organized at the bash script.~~
   - ~~adjust https://sparknlp.org/ libs version for Windows 11~~
 
 - Use Classification to classify messages
-  - explore using of https://sparknlp.org/
+- explore using of https://sparknlp.org/
 
 - Implement the tf/idf algorithm to find keywords in each message within the concrete channel
   - automate the creation of Azure resources needed
@@ -70,7 +70,10 @@ Flag recognition should be organized at the bash script.~~
 
 - ~~Create a pipeline to ingest messages~~
 - Find a way to categorize messages into some predefined categories:
-  - Doc: https://learn.microsoft.com/en-us/azure/ai-services/language-service/custom-text-classification/overview 
+  - ~~Doc: https://learn.microsoft.com/en-us/azure/ai-services/language-service/custom-text-classification/overview~~ 
   - ~~Create a Spark job in Fabric to create the labelled-data-file out of raw messages and a subset of labelled messages: 
   https://learn.microsoft.com/en-gb/azure/ai-services/language-service/custom-text-classification/concepts/data-formats~~
-- Automate deployment: Fabric pipline + VM on Azure + Azure AI language Services
+
+- Find a way to create and train a model in Azure AI Language from Fabric
+
+- Automate deployment: Fabric pipline + Azure AI language Services
