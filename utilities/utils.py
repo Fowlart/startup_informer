@@ -30,8 +30,13 @@ def execute_init_procedure(func, search_term: str = ""):
     client: TelegramClient = get_tg_client()
 
     if os.path.isdir("dialogs"):
-        shutil.rmtree("dialogs")
-    os.mkdir("dialogs")
+        for root, dirs, files in os.walk("dialogs", topdown=False):
+            for file in files:
+                path = os.path.join(root, file)
+                print(fr"removing file {path}")
+                os.remove(path)
+            for dir_ in dirs:
+                shutil.rmtree(os.path.join(root, dir_))
 
     print(
         f"Starting of script execution `{os.path.basename(__file__)}`. PID: {os.getpid()}")

@@ -1,0 +1,36 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {},
+  "variables": {},
+  "resources": [
+    {
+      "name": "Telegram messages transformation pipeline",
+      "type": "pipelines",
+      "apiVersion": "2018-06-01",
+      "properties": {
+        "activities": [
+          {
+            "name": "Fetch messages",
+            "type": "TridentNotebook",
+            "dependsOn": [],
+            "policy": {
+              "timeout": "0.12:00:00",
+              "retry": 0,
+              "retryIntervalInSeconds": 30,
+              "secureOutput": false,
+              "secureInput": false
+            },
+            "typeProperties": {
+              "notebookId": "55da73bc-654f-44fd-bda2-efc5f94d4c83",
+              "workspaceId": "f84e1c9b-548c-46aa-be57-a07a7203ce0c"
+            }
+          }
+        ],
+        "lastModifiedByObjectId": "b473c333-f317-4412-9254-91ad92722859",
+        "lastPublishTime": "2025-05-10T18:39:36Z"
+      },
+      "dependsOn": []
+    }
+  ]
+}
