@@ -58,7 +58,7 @@ Flag recognition should be organized at the bash script.~~
 
 - Implement the tf/idf algorithm to find keywords in each message within the concrete channel
   - automate the creation of Azure resources needed
-  ~~- explore using of https://sparknlp.org/~~
+  - ~~explore using of https://sparknlp.org/~~
 
 - Index all messages from telegram to Azure AI search, implement search by key-words from telegram
 
@@ -68,12 +68,13 @@ Flag recognition should be organized at the bash script.~~
 
 **Moving workloads to MS Fabric:**
 
-- ~~Create a pipeline to ingest messages~~
-- Find a way to categorize messages into some predefined categories:
-  - ~~Doc: https://learn.microsoft.com/en-us/azure/ai-services/language-service/custom-text-classification/overview~~ 
-  - ~~Create a Spark job in Fabric to create the labelled-data-file out of raw messages and a subset of labelled messages: 
-  https://learn.microsoft.com/en-gb/azure/ai-services/language-service/custom-text-classification/concepts/data-formats~~
-
-- Find a way to create and train a model in Azure AI Language from Fabric
-
-- Automate deployment: Fabric pipline + Azure AI language Services
+1. [x] ~~Create a pipeline to ingest messages~~
+2. [x] ~~Find a way to categorize messages into some predefined categories:~~
+  - [Custom text classification](https://learn.microsoft.com/en-us/azure/ai-services/language-service/custom-text-classification/overview) 
+  - [Label file](https://learn.microsoft.com/en-us/python/api/overview/azure/mgmt-cognitiveservices-readme?view=azure-python)
+3. [x] ~~Create a Spark job in Fabric to create the labelled-data-file out of raw messages and a subset of labelled messages~~
+4. [x] Find a way to create and train a model in Azure AI Language from Fabric:
+ - [Cognitive Services Management Client Library](https://learn.microsoft.com/en-us/python/api/overview/azure/mgmt-cognitiveservices-readme?view=azure-python)
+ - Use OOP to create own Client implementation
+ - Consider use Azure CLI 
+5. [x] Automate deployment: Fabric pipline + Azure AI language Services
