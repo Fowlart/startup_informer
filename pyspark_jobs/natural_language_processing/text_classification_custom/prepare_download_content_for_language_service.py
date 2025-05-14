@@ -7,6 +7,8 @@ from pyspark.sql.types import StringType
 from pyspark_jobs.__init__ import get_labelled_message_schema, get_raw_schema_definition
 import json
 from utilities.utils import save_to_blob, clear_container
+from utilities.CognitiveServicesManagement import CognitiveServiceManagement
+
 if __name__ == "__main__":
 
     os.environ['PYSPARK_PYTHON'] = sys.executable
@@ -76,21 +78,22 @@ if __name__ == "__main__":
         }
     }).collect()
 
+    project_name = "tg-message-classification"
 
     labels_dict = {
         "projectFileVersion": "2022-05-01",
         "stringIndexType": "Utf16CodeUnit",
         "metadata": {
-            "projectKind": "CustomSingleLabelClassification",
+            "projectKind": "customSingleLabelClassification",
             "storageInputContainerName": "telegram-messages",
             "settings": {},
-            "projectName": "tg-message-classification",
+            "projectName": project_name,
             "multilingual": "false",
             "description": "Project-description",
             "language": "uk"
         },
         "assets": {
-            "projectKind": "CustomSingleLabelClassification",
+            "projectKind": "customSingleLabelClassification",
             "classes": [
                 {
                     "category": "food"
@@ -107,7 +110,9 @@ if __name__ == "__main__":
     }
 
     print("Label file: ")
+
     print(json.dumps(labels_dict, indent=4, ensure_ascii=False))
+
 
     files_to_export =result_df.rdd.map( lambda row: {
         "file_name": row.file_name,
@@ -124,6 +129,9 @@ if __name__ == "__main__":
     for f in files_to_export:
         save_to_blob(f["file_name"],f["message_text"])
 
-    save_to_blob("labels.json",labels_dict)
+   # save_to_blob("labels.json",labels_dict)
+    management = CognitiveServiceManagement()
 
+    management.create_language_service_single_label_classification_project(project_name=project_name,
+                                                                           generated_label_file=labels_dict)
     spark.stop()

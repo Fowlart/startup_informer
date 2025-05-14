@@ -1,1 +1,0 @@
-az cognitiveservices account list
