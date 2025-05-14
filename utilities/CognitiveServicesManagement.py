@@ -1,3 +1,5 @@
+import json
+
 from azure.identity import DefaultAzureCredential
 from azure.mgmt.cognitiveservices import CognitiveServicesManagementClient
 import os
@@ -28,11 +30,9 @@ class CognitiveServiceManagement(object):
         }
 
         url = f"{endpoint}/language/authoring/analyze-text/projects/{project_name}/:import?api-version=2022-05-01"
-
         print(f"Sending request: {url}")
-
         print(headers)
-
+        print(json.dumps(generated_label_file))
 
         try:
             response = requests.post(url, headers=headers, json=generated_label_file)
