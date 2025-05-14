@@ -129,9 +129,7 @@ if __name__ == "__main__":
     for f in files_to_export:
         save_to_blob(f["file_name"],f["message_text"])
 
-   # save_to_blob("labels.json",labels_dict)
+    # todo: add project removal
     management = CognitiveServiceManagement()
-
-    management.create_language_service_single_label_classification_project(project_name=project_name,
-                                                                           generated_label_file=labels_dict)
+    management.create_language_service_single_label_classification_project(project_name=project_name, generated_label_file=labels_dict)
     spark.stop()
