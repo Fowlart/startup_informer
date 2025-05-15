@@ -6,12 +6,11 @@ import os
 
 import requests
 
-from azure.mgmt.cognitiveservices.models import Usage
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.textanalytics import (TextAnalyticsClient, SingleLabelClassifyAction)
 
 
-class CognitiveServiceManagement(object):
+class LanguageServiceManagement(object):
 
     def __init__(self):
         pass
@@ -161,8 +160,41 @@ class CognitiveServiceManagement(object):
             print(f"Failed to start training for project '{project_name}': {e}")
 
 
+    def deploy_model(self, model_name: str, project_name: str, deployment_name: str):
+
+        endpoint = os.getenv("AZURE_LANGUAGE_ENDPOINT")
+        key = os.getenv("AZURE_LANGUAGE_KEY")
+        headers = {
+            "Ocp-Apim-Subscription-Key": key
+        }
+
+        body = {
+            "trainedModelLabel": f"{model_name}"
+        }
+
+        url = f"{endpoint}/language/authoring/analyze-text/projects/{project_name}/deployments/{deployment_name}?api-version=2022-05-01"
+        print(f"Sending deployment request for project: {project_name}")
+        print(f"Request URL: {url}")
+
+        try:
+            response = requests.put(url, headers=headers, json=body)
+            response.raise_for_status()
+            print(f"Deployment initiated successfully. Status code: {response.status_code}")
+
+            operation_location = response.headers.get("operation-location")
+
+            if operation_location:
+                print(f"Track training operation at: {operation_location}")
+                self.track_operation(operation_location)
+
+            else:
+                print("Operation location not provided in the response.")
+        except requests.exceptions.RequestException as e:
+            print(f"Failed to start training for project '{project_name}': {e}")
+
+
 if __name__ == "__main__":
-    management_client = CognitiveServiceManagement()
+    management_client = LanguageServiceManagement()
 
     documents = [
         "Ти поганий!",
@@ -176,7 +208,7 @@ if __name__ == "__main__":
         "Де зараз Вдадьо?"]
 
     management_client.classify_documents_single_category(
-        deployment_name="???",
+        deployment_name="first_model",
         documents=documents,
         project_name="tg-message-classification"
     )

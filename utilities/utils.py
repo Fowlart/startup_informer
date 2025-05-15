@@ -1,5 +1,9 @@
 import os
+import time
 
+from azure.core.paging import ItemPaged
+from azure.storage.blob import BlobProperties
+from azure.storage.blob.aio import BlobPrefix
 from telethon import TelegramClient
 import shutil
 import json
@@ -62,11 +66,26 @@ def save_to_blob(blob_name: str, json_record: dict[str,str]):
     print(blob_info)
 
 
-def clear_container():
-    az.auth_connection_string()
-    container_client = az.container_client
+def clear_container(container_name: str):
+    container_client = az.get_container_client(container_name)
+    if container_client.exists():
 
-    blobs = container_client.list_blobs()
-    for blob in blobs:
-        container_client.delete_blob(blob.name)
-    print(f"All blobs have been deleted from the container.")
+        container_client.delete_container()
+        time.sleep(2)
+
+        while not container_client.exists():
+            time.sleep(2)
+            try:
+                container_client.create_container()
+            except Exception as ex:
+                print("Wait for container to be removed...")
+                template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+                message = template.format(type(ex).__name__, ex.args)
+                print(message)
+
+    else:
+        print(f"Creating new container {container_name}")
+        container_client = az.get_container_client(container_name)
+        container_client.create_container()
+
+    print(f"Container {container_name} has been recreated.")

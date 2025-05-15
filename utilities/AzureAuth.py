@@ -48,6 +48,10 @@ class AzureAuth(object):
         self.container_name: str = container_name
         self.blob_service_client = None
 
+    def get_container_client(self, container_name: str) -> ContainerClient:
+
+        return  ContainerClient.from_connection_string(self.connection_string, container_name=container_name)
+
     def auth_connection_string(self):
         if self.connection_string is None:
             print("Missing required environment variable: STORAGE_CONNECTION_STRING." + '\n' +
@@ -60,8 +64,7 @@ class AzureAuth(object):
 
         # [START auth_from_connection_string_container]
         from azure.storage.blob import ContainerClient
-        self.container_client = ContainerClient.from_connection_string(
-            self.connection_string, container_name=self.container_name)
+        self.container_client = ContainerClient.from_connection_string(self.connection_string, container_name=self.container_name)
         # [END auth_from_connection_string_container]
 
         # [START auth_from_connection_string_blob]

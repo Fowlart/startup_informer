@@ -7,7 +7,7 @@ from pyspark.sql.types import StringType
 from pyspark_jobs.__init__ import get_labelled_message_schema, get_raw_schema_definition
 import json
 from utilities.utils import save_to_blob, clear_container
-from utilities.CognitiveServicesManagement import CognitiveServiceManagement
+from utilities.LanguageServiceManagement import LanguageServiceManagement
 
 if __name__ == "__main__":
 
@@ -79,6 +79,8 @@ if __name__ == "__main__":
     }).collect()
 
     project_name = "tg-message-classification"
+    container_name = "telegram-messages"
+    model_name = "first_model"
 
     labels_dict = {
         "projectFileVersion": "2022-05-01",
@@ -126,12 +128,12 @@ if __name__ == "__main__":
     for x in files_to_export:
         print(x)
 
-    management = CognitiveServiceManagement()
+    management = LanguageServiceManagement()
 
     (management
      .remove_language_service_single_label_classification_project(project_name=project_name))
 
-    clear_container()
+    clear_container(container_name=container_name)
 
     for f in files_to_export:
         save_to_blob(f["file_name"],f["message_text"])
@@ -140,6 +142,8 @@ if __name__ == "__main__":
      .create_language_service_single_label_classification_project(project_name=project_name,
                                                                            generated_label_file=labels_dict))
 
-    management.start_training(project_name=project_name,model_name="first_model")
+    management.start_training(project_name=project_name,model_name=model_name)
+
+    management.deploy_model(model_name=model_name,project_name=project_name,deployment_name=model_name)
 
     spark.stop()
