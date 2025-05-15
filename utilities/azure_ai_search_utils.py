@@ -86,50 +86,7 @@ def extract_key_phrases(text: str,
 
     return result
 
-def sample_classify_document_single_category(single_category_classify_project_name: str,
-                                             single_category_classify_deployment_name: str,
-                                             documents: list[str]):
-
-    endpoint = _get_language_service_endpoint()
-    key = _get_language_service_key()
-    project_name = single_category_classify_project_name
-    deployment_name = single_category_classify_deployment_name
-
-
-    text_analytics_client = TextAnalyticsClient(
-        endpoint=endpoint,
-        credential=AzureKeyCredential(key),
-    )
-
-
-
-    poller = text_analytics_client.begin_analyze_actions(
-        documents,
-        actions=[
-            SingleLabelClassifyAction(
-                project_name=project_name,
-                deployment_name=deployment_name
-            ),
-        ],
-    )
-
-    document_results = poller.result()
-    for doc, classification_results in zip(documents, document_results):
-        print(f"{doc} <-> {classification_results}")
 
 
 if __name__ == "__main__":
-
-    print("Showcase custom text classification: ")
-    sample_classify_document_single_category(single_category_classify_project_name="tg-message-classification",
-                                             single_category_classify_deployment_name="deployed_first_model",
-                                             documents=[
-                                                 "Ти поганий!",
-                                                 "Чому не відписуєш???????",
-                                                 "Ти невдячний!",
-                                                 "Не псуй мені нерви!",
-                                                 "Люблю тебе сильно!",
-                                                 "Купи грінки з хумосом",
-                                                 "Принеси додому 3 пляшки води",
-                                                 "Графік на понеділок: 9:00 - робота",
-                                                 "Де зараз Вдадьо?"])
+ pass

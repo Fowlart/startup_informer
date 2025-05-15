@@ -103,6 +103,9 @@ if __name__ == "__main__":
                 },
                 {
                     "category": "toxic"
+                },
+                {
+                    "category": "children"
                 }
             ],
             "documents": combined_list
@@ -110,7 +113,6 @@ if __name__ == "__main__":
     }
 
     print("Label file: ")
-
     print(json.dumps(labels_dict, indent=4, ensure_ascii=False))
 
 
@@ -124,12 +126,20 @@ if __name__ == "__main__":
     for x in files_to_export:
         print(x)
 
+    management = CognitiveServiceManagement()
+
+    (management
+     .remove_language_service_single_label_classification_project(project_name=project_name))
+
     clear_container()
 
     for f in files_to_export:
         save_to_blob(f["file_name"],f["message_text"])
 
-    # todo: add project removal
-    management = CognitiveServiceManagement()
-    management.create_language_service_single_label_classification_project(project_name=project_name, generated_label_file=labels_dict)
+    (management
+     .create_language_service_single_label_classification_project(project_name=project_name,
+                                                                           generated_label_file=labels_dict))
+
+    management.start_training(project_name=project_name,model_name="first_model")
+
     spark.stop()
