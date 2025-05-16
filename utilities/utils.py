@@ -1,18 +1,10 @@
 import os
 import time
 
-from azure.core.paging import ItemPaged
-from azure.storage.blob import BlobProperties
-from azure.storage.blob.aio import BlobPrefix
 from telethon import TelegramClient
 import shutil
 import json
 import codecs
-
-from utilities.AzureAuth import AzureAuth
-
-az = AzureAuth("telegram-messages")
-
 
 def get_tg_client() -> TelegramClient:
     api_id = os.getenv("TELEGRAM_API_ID")
@@ -55,37 +47,3 @@ def save_to_local_fs(path: str, json_record: dict[str,str]):
         json_object = json.dumps(json_record, indent=2, separators=(',', ':'), ensure_ascii=False)
         file.write(json_object)
         file.close()
-
-#todo: implement
-def save_to_blob(blob_name: str, json_record: dict[str,str]):
-    json_object = json.dumps(json_record, indent=2, separators=(',', ':'), ensure_ascii=False)
-    az.auth_connection_string()
-    container_client = az.container_client
-    source_blob_client = container_client.get_blob_client(blob_name)
-    blob_info = source_blob_client.upload_blob(json_object, blob_type="BlockBlob", overwrite=True)
-    print(blob_info)
-
-
-def clear_container(container_name: str):
-    container_client = az.get_container_client(container_name)
-    if container_client.exists():
-
-        container_client.delete_container()
-        time.sleep(2)
-
-        while not container_client.exists():
-            time.sleep(2)
-            try:
-                container_client.create_container()
-            except Exception as ex:
-                print("Wait for container to be removed...")
-                template = "An exception of type {0} occurred. Arguments:\n{1!r}"
-                message = template.format(type(ex).__name__, ex.args)
-                print(message)
-
-    else:
-        print(f"Creating new container {container_name}")
-        container_client = az.get_container_client(container_name)
-        container_client.create_container()
-
-    print(f"Container {container_name} has been recreated.")

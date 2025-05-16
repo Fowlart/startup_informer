@@ -1,7 +1,5 @@
 import json
 
-from azure.identity import DefaultAzureCredential
-from azure.mgmt.cognitiveservices import CognitiveServicesManagementClient
 import os
 
 import requests
@@ -15,11 +13,7 @@ class LanguageServiceManagement(object):
     def __init__(self):
         pass
 
-    def get_cognitive_services_management_client(self):
-        sub_id = os.getenv("AZURE_MAIN_SUBSCRIPTION_ID")
-        return CognitiveServicesManagementClient(credential=DefaultAzureCredential(), subscription_id=sub_id)
-
-    def track_operation(self, operation_location: str):
+    def _track_operation(self, operation_location: str):
         import time
 
         headers = {
@@ -69,7 +63,7 @@ class LanguageServiceManagement(object):
             response.raise_for_status()
             print(f"Status code: {response.status_code}")
             print(f"Track project deployment: {response.headers.get('operation-location')}")
-            self.track_operation(response.headers.get("operation-location"))
+            self._track_operation(response.headers.get("operation-location"))
 
         except requests.exceptions.RequestException as e:
             print(f": {e}")
@@ -152,7 +146,7 @@ class LanguageServiceManagement(object):
             operation_location = response.headers.get("operation-location")
             if operation_location:
                 print(f"Track training operation at: {operation_location}")
-                self.track_operation(operation_location)
+                self._track_operation(operation_location)
 
             else:
                 print("Operation location not provided in the response.")
@@ -185,7 +179,7 @@ class LanguageServiceManagement(object):
 
             if operation_location:
                 print(f"Track training operation at: {operation_location}")
-                self.track_operation(operation_location)
+                self._track_operation(operation_location)
 
             else:
                 print("Operation location not provided in the response.")

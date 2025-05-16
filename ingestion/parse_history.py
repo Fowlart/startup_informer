@@ -11,7 +11,7 @@ import datetime as dt
 import time
 sys.path.append(os.path.abspath(os.path.join(".", "../startup_informer")))
 print(sys.path)
-from utilities.utils import get_tg_client, execute_init_procedure, save_to_local_fs, save_to_blob, clear_container
+from utilities.utils import execute_init_procedure, save_to_local_fs
 from dotenv import load_dotenv
 
 
@@ -19,9 +19,6 @@ async def find_and_ingest_messages(dialog: Dialog,
                                    client: TelegramClient,
                                    search_term: str):
     load_dotenv("./../.env")
-
-    if os.getenv('INGESTION_DEST') != 'local':
-       clear_container()
 
     print(f"Processing dialog `{dialog.title}`")
 
@@ -60,10 +57,7 @@ async def find_and_ingest_messages(dialog: Dialog,
                     "user": user
             }
 
-            if os.getenv('INGESTION_DEST') == 'local':
-                save_to_local_fs(path=f"./dialogs/{folder_name}/{file_name}", json_record=json_record)
-            else:
-                save_to_blob(blob_name=str(file_name),json_record=json_record)
+            save_to_local_fs(path=f"./dialogs/{folder_name}/{file_name}", json_record=json_record)
 
 
     print(f"Dialog `{dialog.title}` was fully parsed.")

@@ -1,13 +1,13 @@
 import os
 import sys
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, input_file_name, lit, split, size, coalesce
+from pyspark.sql.functions import col, input_file_name, lit, split, size
 from pyspark.sql.types import StringType
 
 from pyspark_jobs.__init__ import get_labelled_message_schema, get_raw_schema_definition
 import json
-from utilities.utils import save_to_blob, clear_container
-from utilities.LanguageServiceManagement import LanguageServiceManagement
+from utilities.AzureLanguageServiceManagement import LanguageServiceManagement
+from utilities.AzureStorageContainerBlobManagement import AzureStorageContainerBlobManagement
 
 if __name__ == "__main__":
 
@@ -34,7 +34,6 @@ if __name__ == "__main__":
         .select("message_text", "category")
         .filter(col("category") != "undefined")
     )
-
 
     all_messages_df =(spark
           .read
@@ -81,6 +80,8 @@ if __name__ == "__main__":
     project_name = "tg-message-classification"
     container_name = "telegram-messages"
     model_name = "first_model"
+    lang_management = LanguageServiceManagement()
+    container_management = AzureStorageContainerBlobManagement(container_name=container_name)
 
     labels_dict = {
         "projectFileVersion": "2022-05-01",
@@ -128,22 +129,18 @@ if __name__ == "__main__":
     for x in files_to_export:
         print(x)
 
-    management = LanguageServiceManagement()
-
-    (management
+    (lang_management
      .remove_language_service_single_label_classification_project(project_name=project_name))
 
-    clear_container(container_name=container_name)
+    container_management.clear_container()
 
     for f in files_to_export:
-        save_to_blob(f["file_name"],f["message_text"])
+        container_management.save_to_blob(f["file_name"],f["message_text"])
 
-    (management
-     .create_language_service_single_label_classification_project(project_name=project_name,
-                                                                           generated_label_file=labels_dict))
+    (lang_management.create_language_service_single_label_classification_project(project_name=project_name, generated_label_file=labels_dict))
 
-    management.start_training(project_name=project_name,model_name=model_name)
+    lang_management.start_training(project_name=project_name, model_name=model_name)
 
-    management.deploy_model(model_name=model_name,project_name=project_name,deployment_name=model_name)
+    lang_management.deploy_model(model_name=model_name, project_name=project_name, deployment_name=model_name)
 
     spark.stop()
