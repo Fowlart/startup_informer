@@ -1,9 +1,6 @@
 import json
-
 import os
-
 import requests
-
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.textanalytics import (TextAnalyticsClient, SingleLabelClassifyAction)
 
