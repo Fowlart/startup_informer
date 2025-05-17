@@ -88,7 +88,7 @@ class LanguageServiceManagement(object):
     def classify_documents_single_category(self,
                                            project_name: str,
                                            deployment_name: str,
-                                           documents: list[str]):
+                                           document: str):
 
         endpoint = os.getenv("AZURE_LANGUAGE_ENDPOINT")
         key = os.getenv("AZURE_LANGUAGE_KEY")
@@ -101,7 +101,7 @@ class LanguageServiceManagement(object):
         )
 
         poller = text_analytics_client.begin_analyze_actions(
-            documents,
+            [document],
             actions=[
                 SingleLabelClassifyAction(
                     project_name=project_name,
@@ -110,9 +110,7 @@ class LanguageServiceManagement(object):
             ],
         )
 
-        document_results = poller.result()
-        for doc, classification_results in zip(documents, document_results):
-            print(f"{doc} <-> {classification_results}")
+        return poller.result().next()[0]['classifications'][0]['category']
 
     def start_training(self, model_name: str, project_name: str):
 
@@ -185,21 +183,13 @@ class LanguageServiceManagement(object):
 
 
 if __name__ == "__main__":
+
     management_client = LanguageServiceManagement()
 
-    documents = [
-        "Ти поганий!",
-        "Чому не відписуєш???????",
-        "Ти невдячний!",
-        "Не псуй мені нерви!",
-        "Люблю тебе сильно!",
-        "Купи грінки з хумосом",
-        "Принеси додому 3 пляшки води",
-        "Графік на понеділок: 9:00 - робота",
-        "Де зараз Вдадьо?"]
-
-    management_client.classify_documents_single_category(
+    result = management_client.classify_documents_single_category(
         deployment_name="first_model",
-        documents=documents,
+        document = "Суші і 20 грам горілки!",
         project_name="tg-message-classification"
     )
+
+    print(result)
