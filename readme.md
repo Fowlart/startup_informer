@@ -74,6 +74,6 @@ Flag recognition should be organized at the bash script.~~
   - [Label file](https://learn.microsoft.com/en-us/python/api/overview/azure/mgmt-cognitiveservices-readme?view=azure-python)
 3. [x] ~~Create a Spark job in Fabric to create the labelled-data-file out of raw messages and a subset of labelled messages~~
 4. [x] ~~Find a way to create and train a model in Azure AI Language from Fabric~~
-5. [x] Add a task in the pipeline to classify all messages using a trained model
-6. [x] Publish the result chart somehow
+5. [x] ~~Add a task in the pipeline to classify all messages using a trained model~~
+6. [x] ~~Publish the result chart somehow~~
 7. [x] Automate deployment: Fabric pipline + Azure AI language Services
