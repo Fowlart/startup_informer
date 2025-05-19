@@ -75,7 +75,8 @@ Flag recognition should be organized at the bash script.~~
 3. [x] ~~Create a Spark job in Fabric to create the labelled-data-file out of raw messages and a subset of labelled messages~~
 4. [x] ~~Find a way to create and train a model in Azure AI Language from Fabric~~
 5. [x] ~~Add a task in the pipeline to classify all messages using a trained model~~
-6. [x] ~~Publish the result chart somehow~~
+6. [x] ~~Publish the result chart somehow~~ [report page](https://fowlartaisearchstore.z20.web.core.windows.net/)
 7. [x] Automate deployment: Fabric pipline + Azure AI language Services.
 _This part could not be achieved without git integration, which is accessible in the paid version only_.
+8. [x] Add conditional logic to check if the number of labelled messages was changed, and run retraining of text classification based on it
     
