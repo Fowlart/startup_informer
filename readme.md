@@ -68,10 +68,13 @@ Flag recognition should be organized at the bash script.~~
 
 **Create workloads in MS Fabric:**
 
+Docs:
+1. [Data factory](https://learn.microsoft.com/en-us/fabric/data-factory/)
+2. [Custom text classification](https://learn.microsoft.com/en-us/azure/ai-services/language-service/custom-text-classification/overview)
+
+Tasks
 1. [x] ~~Create a pipeline to ingest messages~~
 2. [x] ~~Find a way to categorize messages into some predefined categories:~~
-  - [Custom text classification](https://learn.microsoft.com/en-us/azure/ai-services/language-service/custom-text-classification/overview) 
-  - [Label file](https://learn.microsoft.com/en-us/python/api/overview/azure/mgmt-cognitiveservices-readme?view=azure-python)
 3. [x] ~~Create a Spark job in Fabric to create the labelled-data-file out of raw messages and a subset of labelled messages~~
 4. [x] ~~Find a way to create and train a model in Azure AI Language from Fabric~~
 5. [x] ~~Add a task in the pipeline to classify all messages using a trained model~~
