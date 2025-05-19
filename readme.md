@@ -66,7 +66,7 @@ Flag recognition should be organized at the bash script.~~
 
 - Add single-time key extraction for Azure services(Keyring)
 
-**Moving workloads to MS Fabric:**
+**Create workloads in MS Fabric:**
 
 1. [x] ~~Create a pipeline to ingest messages~~
 2. [x] ~~Find a way to categorize messages into some predefined categories:~~
@@ -76,4 +76,6 @@ Flag recognition should be organized at the bash script.~~
 4. [x] ~~Find a way to create and train a model in Azure AI Language from Fabric~~
 5. [x] ~~Add a task in the pipeline to classify all messages using a trained model~~
 6. [x] ~~Publish the result chart somehow~~
-7. [x] Automate deployment: Fabric pipline + Azure AI language Services
+7. [x] Automate deployment: Fabric pipline + Azure AI language Services.
+_This part could not be achieved without git integration, which is accessible in the paid version only_.
+    
