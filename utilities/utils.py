@@ -1,5 +1,4 @@
 import os
-import time
 
 from telethon import TelegramClient
 import shutil

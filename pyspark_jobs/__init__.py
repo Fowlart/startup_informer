@@ -1,4 +1,4 @@
-from pyspark.sql.types import StructType, StructField, StringType, BooleanType
+from pyspark.sql.types import StructType, StructField, StringType
 
 def get_raw_schema_definition() -> StructType:
     """
@@ -8,31 +8,31 @@ def get_raw_schema_definition() -> StructType:
     user_schema = StructType([
         StructField("_", StringType(), True),
         StructField("id", StringType(), True),  # Changed LongType to StringType because the id seems too large for a LongType, and it's represented as string in JSON
-        StructField("is_self", BooleanType(), True),
-        StructField("contact", BooleanType(), True),
-        StructField("mutual_contact", BooleanType(), True),
-        StructField("deleted", BooleanType(), True),
-        StructField("bot", BooleanType(), True),
-        StructField("bot_chat_history", BooleanType(), True),
-        StructField("bot_nochats", BooleanType(), True),
-        StructField("verified", BooleanType(), True),
-        StructField("restricted", BooleanType(), True),
-        StructField("min", BooleanType(), True),
-        StructField("bot_inline_geo", BooleanType(), True),
-        StructField("support", BooleanType(), True),
-        StructField("scam", BooleanType(), True),
-        StructField("apply_min_photo", BooleanType(), True),
-        StructField("fake", BooleanType(), True),
-        StructField("bot_attach_menu", BooleanType(), True),
-        StructField("premium", BooleanType(), True),
-        StructField("attach_menu_enabled", BooleanType(), True),
-        StructField("bot_can_edit", BooleanType(), True),
-        StructField("close_friend", BooleanType(), True),
-        StructField("stories_hidden", BooleanType(), True),
-        StructField("stories_unavailable", BooleanType(), True),
-        StructField("contact_require_premium", BooleanType(), True),
-        StructField("bot_business", BooleanType(), True),
-        StructField("bot_has_main_app", BooleanType(), True),
+        StructField("is_self", StringType(), True),
+        StructField("contact", StringType(), True),
+        StructField("mutual_contact", StringType(), True),
+        StructField("deleted", StringType(), True),
+        StructField("bot", StringType(), True),
+        StructField("bot_chat_history", StringType(), True),
+        StructField("bot_nochats", StringType(), True),
+        StructField("verified", StringType(), True),
+        StructField("restricted", StringType(), True),
+        StructField("min", StringType(), True),
+        StructField("bot_inline_geo", StringType(), True),
+        StructField("support", StringType(), True),
+        StructField("scam", StringType(), True),
+        StructField("apply_min_photo", StringType(), True),
+        StructField("fake", StringType(), True),
+        StructField("bot_attach_menu", StringType(), True),
+        StructField("premium", StringType(), True),
+        StructField("attach_menu_enabled", StringType(), True),
+        StructField("bot_can_edit", StringType(), True),
+        StructField("close_friend", StringType(), True),
+        StructField("stories_hidden", StringType(), True),
+        StructField("stories_unavailable", StringType(), True),
+        StructField("contact_require_premium", StringType(), True),
+        StructField("bot_business", StringType(), True),
+        StructField("bot_has_main_app", StringType(), True),
         StructField("access_hash", StringType(), True), # access_hash is a large number, so StringType is more appropriate.
         StructField("first_name", StringType(), True),
         StructField("last_name", StringType(), True),
@@ -58,8 +58,8 @@ def get_raw_schema_definition() -> StructType:
         StructField("message_text", StringType(), True),
         StructField("dialog", StringType(), True),
         StructField("post_author", StringType(), True),
-        StructField("is_channel", BooleanType(), True),
-        StructField("is_group", BooleanType(), True),
+        StructField("is_channel", StringType(), True),
+        StructField("is_group", StringType(), True),
         StructField("user", user_schema, True)
     ])
 

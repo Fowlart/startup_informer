@@ -15,3 +15,4 @@ init_session.session
 /messages_for_training/
 /labelled_messages_for_training_toxic/
 /.run/
+/ms_sql_data/
