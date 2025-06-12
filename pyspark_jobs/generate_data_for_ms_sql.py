@@ -45,8 +45,7 @@ if __name__ == "__main__":
                                    "user.last_name",
                                    col("user.stories_unavailable").cast(BooleanType()).alias("stories_unavailable"),
                                    "user.phone").distinct()
-    .agg(
-        to_json(collect_list(struct("*"))).alias("json_array_str"))
+    .agg(to_json(collect_list(struct("*"))).alias("json_array_str"))
     .select("json_array_str")
     .collect()[0][0])
 
