@@ -28,7 +28,13 @@ async def find_and_ingest_messages(dialog: Dialog,
 
         text_message: str = message.raw_text
 
-        folder_name = dialog.title.replace(" ", "_").replace("/", "_")
+        folder_name = (dialog
+                       .title
+                       .replace(" ", "_")
+                       .replace("/", "_")
+                        .replace("|","_")
+                       .replace(":",""))
+
 
         if text_message and ( search_term.lower() in text_message.lower() ):
 
