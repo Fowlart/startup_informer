@@ -30,10 +30,11 @@ if __name__ == "__main__":
           .withColumn("path", input_file_name())
           .withColumn("message_date", to_date(col("message_date")))
           .withColumn("first_name", col("user").getItem("first_name"))
+          .withColumn("user_id", col("user").getItem("id"))
           .orderBy(col("message_date").desc_nulls_last()))
 
     messages_json_output = (
-        df.select("path", "message_date", "message_text", "first_name")
+        df.select("message_date", "message_text", "first_name", "user_id")
           .agg(to_json(collect_list(struct("*"))).alias("json_array_str"))
           .select("json_array_str").collect()[0][0]
     )
