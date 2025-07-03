@@ -4,6 +4,8 @@
 
 - This application also serves as a laboratory for studying SaaS solutions, such as MS Fabric, Azure AI search, and Azure Language Service for Natural Language Processing-related tasks
 
+**How to install on Windows 11 [todo]:**
+
 **How to install on Linux Ubuntu:**
 
 1/ fetch the project through /git clone: 

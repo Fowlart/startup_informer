@@ -32,7 +32,8 @@ async def find_and_ingest_messages(dialog: Dialog,
                        .title
                        .replace(" ", "_")
                        .replace("/", "_")
-                        .replace("|","_")
+                       .replace("|","_")
+                       .replace('"',"_")
                        .replace(":",""))
 
 
