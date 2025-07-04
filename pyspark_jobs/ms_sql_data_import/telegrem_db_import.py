@@ -5,13 +5,18 @@ from pyspark.sql.functions import col, input_file_name, to_date, to_json, collec
 from delta import *
 from pyspark.sql.types import BooleanType
 
-from __init__ import get_raw_schema_definition
+# beautiful import :)
+from pyspark_jobs import get_raw_schema_definition
 
 if __name__ == "__main__":
 
-    if not os.path.isdir(f"../dialogs/"):
+    message_folder = f"../../dialogs"
+    output_path = "../../ms_sql_data"
+
+    if not os.path.isdir(message_folder) or not os.path.isdir(output_path):
         print(
-            "There are no messages for creating the table. Please, park the messages first under the `dialogs` folder!")
+            "There are no necessary folders in the system. Please create a folder and park the necessary content for "
+            "importing into MS SQL Server.")
         sys.exit(1)
 
     builder = (SparkSession
@@ -25,7 +30,7 @@ if __name__ == "__main__":
           .option("multiline", "true")
           .option("recursiveFileLookup", "true")
           .schema(get_raw_schema_definition())
-          .json("../dialogs/")
+          .json(message_folder)
           .filter(isnotnull(col("user")))
           .withColumn("path", input_file_name())
           .withColumn("message_date", to_date(col("message_date")))
@@ -50,12 +55,11 @@ if __name__ == "__main__":
     .select("json_array_str")
     .collect()[0][0])
 
-    output_path = "../ms_sql_data/"
 
-    with open(f"{output_path}single_dialogs_array.json", "w", encoding="utf-16") as f:
+    with open(f"{output_path}/single_dialogs_array.json", "w", encoding="utf-16") as f:
         f.write(messages_json_output)
 
-    with open(f"{output_path}users_array.json", "w", encoding="utf-16") as f:
+    with open(f"{output_path}/users_array.json", "w", encoding="utf-16") as f:
         f.write(users_json_output)
 
     spark.stop()
