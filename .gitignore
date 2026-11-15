@@ -16,3 +16,5 @@ init_session.session
 /labelled_messages_for_training_toxic/
 /.run/
 /ms_sql_data/
+/.tmp.drivedownload/
+/.tmp.driveupload/

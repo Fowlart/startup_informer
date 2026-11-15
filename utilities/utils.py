@@ -4,11 +4,19 @@ from telethon import TelegramClient
 import shutil
 import json
 import codecs
+from pathlib import Path
 
 def get_tg_client() -> TelegramClient:
     api_id = os.getenv("TELEGRAM_API_ID")
     api_hash = os.getenv("TELEGRAM_API_HASH")
-    return TelegramClient("init_session", int(api_id), api_hash)
+    session_path = str(Path.home() / ".secrets" / "init_session.session")
+
+    return TelegramClient(session_path,
+    api_id=int(api_id),
+    api_hash=api_hash,
+    device_model="ASUS Zenbook 14",
+    system_version="Windows 11",
+    app_version="1.42.0")
 
 async def send_file_to_myself(client: TelegramClient, file_path: str):
     await client.send_file("me", file_path)
